@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxCar - Gestão Premium</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #16213e;
+      --accent: #c9a227;
+      --accent-light: #e8d5a3;
+      --gold-gradient: linear-gradient(135deg, #c9a227 0%, #f4e4bc 50%, #c9a227 100%);
+      --card-bg: #ffffff;
+      --text-dark: #1a1a2e;
+      --text-muted: #6c757d;
+      --border-light: #e0e0e0;
+    }
+    body { 
+      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%); 
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+    .sidebar { 
+      background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%); 
+      height: 100vh; 
+      color: white;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 16.666667%;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .sidebar-brand {
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.2);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+    .logo-subtitle {
+      font-size: 0.7rem;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-top: 5px;
+    }
+    .sidebar a { 
+      color: rgba(255,255,255,0.8); 
+      text-decoration: none; 
+      padding: 15px 25px; 
+      display: block; 
+      border-radius: 0;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    .sidebar a:hover, .sidebar a.active { 
+      background: rgba(201, 162, 39, 0.15);
+      color: white;
+      border-left-color: var(--accent);
+    }
+    .sidebar a i { margin-right: 10px; width: 20px; }
+    .card { 
+      border: none; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      background: var(--card-bg);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    .stat-card {
+      padding: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .stat-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+    }
+    .stat-card small {
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.75rem;
+    }
+    .btn-premium {
+      background: var(--gold-gradient);
+      color: var(--primary);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-premium:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 15px rgba(201, 162, 39, 0.4);
+      color: var(--primary);
+    }
+    .btn-outline-premium {
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-outline-premium:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+    .status-badge { 
+      font-size: 0.75rem; 
+      padding: 6px 14px; 
+      border-radius: 20px; 
+      font-weight: 500;
+    }
+    .status-disponivel { 
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); 
+      color: #155724; 
+    }
+    .status-vendido { 
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); 
+      color: #721c24; 
+    }
+    .vehicle-img { 
+      width: 80px; 
+      height: 60px; 
+      object-fit: cover; 
+      border-radius: 8px; 
+    }
+    .modal-body { 
+      max-height: 70vh; 
+      overflow-y: auto; 
+    }
+    .modal-content {
+      border-radius: 16px;
+      border: none;
+    }
+    .modal-header {
+      border-bottom: 1px solid var(--border-light);
+      padding: 20px 25px;
+    }
+    .modal-header .modal-title {
+      font-family: 'Playfair Display', serif;
+      color: var(--text-dark);
+    }
+    .form-label {
+      font-weight: 500;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+    .form-control, .form-select {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px 15px;
+      transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+    }
+    .table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    #veiculos-page .table thead th {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      font-weight: 500;
+      padding: 12px;
+      border: none;
+      white-space: nowrap;
+    }
+    #veiculos-page .table td {
+      padding: 12px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    #veiculos-page .table-responsive {
+      overflow-x: auto;
+    }
+    .table thead th:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+    .table thead th:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+    .table tbody tr {
+      transition: all 0.2s ease;
+    }
+    .table tbody tr:hover {
+      background: rgba(201, 162, 39, 0.05);
+    }
+    .table tbody td {
+      padding: 15px;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      color: var(--text-dark);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      position: relative;
+      display: inline-block;
+    }
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--gold-gradient);
+      border-radius: 2px;
+    }
+    .main-content {
+      padding-bottom: 80px;
+      margin-left: 16.666667%;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: rgba(255,255,255,0.7);
+      padding: 15px 25px;
+      text-align: center;
+      font-size: 0.85rem;
+      z-index: 100;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    }
+    .footer strong {
+      color: var(--accent-light);
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .btn-action {
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-box input {
+      padding-left: 45px;
+      border-radius: 25px;
+    }
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .input-group-premium {
+      position: relative;
+    }
+    .input-group-premium::before {
+      content: '\f52a';
+      font-family: 'bootstrap-icons';
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      color: var(--text-muted);
+    }
+    .input-group-premium input {
+      padding-left: 45px;
+      border-radius: 25px 0 0 25px;
+    }
+    .input-group-premium .btn {
+      border-radius: 0 25px 25px 0;
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--primary);
+    }
+    #veiculos-page .search-box {
+      position: relative;
+    }
+    #veiculos-page .search-box input {
+      padding-left: 40px;
+      border-radius: 25px;
+    }
+    #veiculos-page .search-box .btn {
+      border-radius: 25px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2 p-0">
+        <div class="sidebar">
+          <div class="sidebar-brand">
+            <img src="/Logo.png" alt="Logo" style="max-width: 120px; margin-bottom: 10px;">
+            <div class="logo">LuxCar</div>
+            <div class="logo-subtitle">Gestão Premium</div>
+          </div>
+          <nav class="nav flex-column mt-3">
+            <a href="#" class="nav-link active" onclick="showPage('dashboard', event)">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('veiculos', event)">
+              <i class="bi bi-car-front-fill"></i> Veículos
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('historico', event)">
+              <i class="bi bi-clock-history"></i> Histórico Vendas
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('cadastrar', event)">
+              <i class="bi bi-plus-circle"></i> Cadastrar
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('bot', event)">
+              <i class="bi bi-robot"></i> Bot WhatsApp
+            </a>
+            <a href="#" class="nav-link" onclick="showPage('clientes', event)">
+              <i class="bi bi-people"></i> Clientes
+            </a>
+          </nav>
+        </div>
+      </div>
+      
+      <div class="col-md-10 p-4 main-content">
+        <div id="dashboard-page">
+          <h4 class="page-title">Dashboard</h4>
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="total-veiculos">0</h2>
+                <small>Total de Veículos</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="disponiveis" class="text-success">0</h2>
+                <small>Disponíveis</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="vendidos" class="text-danger">0</h2>
+                <small>Vendidos</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="valor-total">R$ 0</h2>
+                <small>Valor em Estoque</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card p-4">
+            <h5 class="mb-4" style="font-family: 'Playfair Display', serif; color: var(--text-dark);">Veículos Recentes</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Marca/Modelo</th>
+                    <th>Ano</th>
+                    <th>KM</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-vehicles"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="veiculos-page" style="display: none;">
+          <h4 class="page-title">Veículos</h4>
+          
+          <div class="card mb-4 p-3">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-3">
+                <label class="form-label small">Buscar</label>
+                <input type="text" class="form-control form-control-sm" id="filter-busca" placeholder="Marca, modelo...">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small">Ano De</label>
+                <input type="number" class="form-control form-control-sm" id="filter-ano-de" placeholder="2015">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small">Ano Até</label>
+                <input type="number" class="form-control form-control-sm" id="filter-ano-ate" placeholder="2024">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small">Preço De</label>
+                <input type="number" class="form-control form-control-sm" id="filter-preco-de" placeholder="0">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small">Preço Até</label>
+                <input type="number" class="form-control form-control-sm" id="filter-preco-ate" placeholder="999999">
+              </div>
+              <div class="col-md-1">
+                <label class="form-label small">Status</label>
+                <select class="form-select form-select-sm" id="filter-status">
+                  <option value="">Todos</option>
+                  <option value="disponivel">Disp</option>
+                  <option value="vendido">Vend</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-3 mt-2">
+              <div class="col-md-6">
+                <button class="btn btn-primary btn-sm" onclick="applyFilters()">
+                  <i class="bi bi-search"></i> Buscar
+                </button>
+                <button class="btn btn-outline-secondary btn-sm ms-2" onclick="clearFilters()">
+                  <i class="bi bi-x-circle"></i> Limpar
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card p-0 mb-4">
+            <div class="table-responsive" style="max-height: calc(100vh - 350px);">
+              <table class="table table-hover mb-0 table-bordered">
+                <thead class="sticky-top bg-dark">
+                  <tr>
+                    <th>Veículo</th>
+                    <th style="width:80px;">Ano</th>
+                    <th style="width:90px;">Placa</th>
+                    <th style="width:100px;">KM</th>
+                    <th style="width:120px;">Preço</th>
+                    <th style="width:100px;">Status</th>
+                    <th style="width:100px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="vehicles-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="historico-page" style="display: none;">
+          <h4 class="page-title">Histórico de Vendas</h4>
+          <div class="card p-0">
+            <div class="table-responsive" style="max-height: calc(100vh - 200px); overflow-y: auto;">
+              <table class="table table-hover mb-0">
+                <thead class="sticky-top bg-dark">
+                  <tr>
+                    <th>Veículo</th>
+                    <th style="width:80px;">Ano</th>
+                    <th style="width:100px;">KM</th>
+                    <th style="width:120px;">Preço Venda</th>
+                    <th style="width:100px;">Data Venda</th>
+                    <th style="width:100px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="historico-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="cadastrar-page" style="display: none;">
+          <h4 class="page-title">Cadastrar Veículo</h4>
+          <div class="card p-4">
+            <form id="vehicle-form">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Marca *</label>
+                  <select class="form-select" name="marca" id="marca-select" required>
+                    <option value="">Selecione a marca...</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Modelo *</label>
+                  <select class="form-select" name="modelo" id="modelo-select" required disabled>
+                    <option value="">Selecione a marca primeiro...</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Ano *</label>
+                  <select class="form-select" name="ano" id="ano-select" required disabled>
+                    <option value="">Selecione o modelo primeiro...</option>
+                  </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Cor</label>
+                  <input type="text" class="form-control" name="cor" placeholder="Ex: Prata">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Quilometragem</label>
+                  <input type="number" class="form-control" name="quilometragem" min="0" value="0">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Preço</label>
+                  <input type="number" class="form-control" name="preco" step="0.01" placeholder="0.00">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Placa</label>
+                  <input type="text" class="form-control" name="placa" placeholder="Ex: ABC-1234" maxlength="8">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label">Status</label>
+                  <select class="form-select" name="status">
+                    <option value="disponivel">Disponível</option>
+                    <option value="vendido">Vendido</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Descrição</label>
+                <textarea class="form-control" name="descricao" rows="3" placeholder="Descrição adicional do veículo..."></textarea>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Fotos do Veículo</label>
+                <input type="file" class="form-control" name="fotos" accept="image/*" multiple>
+                <small class="text-muted">Selecione uma ou mais imagens (máx 5MB cada)</small>
+              </div>
+              <button type="submit" class="btn btn-premium">
+                <i class="bi bi-check-circle"></i> Cadastrar Veículo
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div id="bot-page" style="display: none;">
+          <h4 class="page-title">Bot WhatsApp</h4>
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-msgs-recebidas" class="text-primary">0</h2>
+                <small>Mensagens Recebidas</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-msgs-enviadas" class="text-success">0</h2>
+                <small>Mensagens Enviadas</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-interessados" class="text-warning">0</h2>
+                <small>Interessados</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-connection" class="text-danger">0</h2>
+                <small>Status</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="card p-4">
+                <h5 class="mb-3" style="font-family: 'Playfair Display', serif;">Últimos 7 Dias</h5>
+                <canvas id="chart-week" height="150"></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card p-4">
+                <h5 class="mb-3" style="font-family: 'Playfair Display', serif;">Últimos 30 Dias</h5>
+                <canvas id="chart-month" height="150"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card p-4">
+            <h5 class="mb-3" style="font-family: 'Playfair Display', serif;">Atividade Recente</h5>
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-hover">
+                <thead class="sticky-top bg-dark">
+                  <tr>
+                    <th style="width:150px;">Data/Hora</th>
+                    <th style="width:120px;">Tipo</th>
+                    <th>Telefone</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                  <tbody id="bot-logs"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editModal"
+                <label class="form-label small">Buscar</label>
+                <input type="text" class="form-control form-control-sm" id="filter-cliente" placeholder="Nome, telefone ou email...">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small">Status</label>
+                <select class="form-select form-select-sm" id="filter-status-cliente">
+                  <option value="">Todos</option>
+                  <option value="novo">Novo</option>
+                  <option value="contatado">Contatado</option>
+                  <option value="interessado">Interessado</option>
+                  <option value="inativo">Inativo</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-primary btn-sm" onclick="loadClientes()">
+                  <i class="bi bi-search"></i> Buscar
+                </button>
+              </div>
+              <div class="col-md-4 text-end">
+                <button class="btn btn-premium btn-sm" onclick="openClienteModal()">
+                  <i class="bi bi-person-plus"></i> Novo Cliente
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card p-0">
+            <div class="table-responsive" style="max-height: calc(100vh - 350px);">
+              <table class="table table-hover mb-0">
+                <thead class="sticky-top bg-dark">
+                  <tr>
+                    <th>Nome</th>
+                    <th style="width:120px;">Telefone</th>
+                    <th style="width:150px;">Email</th>
+                    <th style="width:150px;">Veículo de Interesse</th>
+                    <th style="width:100px;">Status</th>
+                    <th style="width:100px;">Fonte</th>
+                    <th style="width:120px;">Cadastro</th>
+                    <th style="width:80px;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="clientes-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Criado e Desenvolvido por <strong>Sérgio Fernandes</strong> | <a href="mailto:sveronezfernandes@gmail.com">sveronezfernandes@gmail.com</a>
+  </div>
+
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Veículo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="edit-form">
+            <input type="hidden" name="id">
+            <div class="mb-3">
+              <label class="form-label">Marca</label>
+              <input type="text" class="form-control" name="marca" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Modelo</label>
+              <input type="text" class="form-control" name="modelo" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ano</label>
+              <input type="number" class="form-control" name="ano" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Cor</label>
+              <input type="text" class="form-control" name="cor">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quilometragem</label>
+              <input type="number" class="form-control" name="quilometragem">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Placa</label>
+              <input type="text" class="form-control" name="placa" maxlength="8">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Preço</label>
+              <input type="number" class="form-control" name="preco" step="0.01">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="disponivel">Disponível</option>
+                <option value="vendido">Vendido</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Descrição</label>
+              <textarea class="form-control" name="descricao" rows="2"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Fotos</label>
+              <input type="file" class="form-control" name="fotos" accept="image/*" multiple>
+              <small class="text-muted">Novas fotos serão adicionadas às existentes</small>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-premium" onclick="saveEdit()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="clienteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="clienteModalTitle">Novo Cliente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="cliente-form">
+            <input type="hidden" name="id">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" name="nome" placeholder="Nome completo">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Telefone *</label>
+              <input type="text" class="form-control" name="telefone" placeholder="5511999999999" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email" placeholder="email@exemplo.com">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Veículo de Interesse</label>
+              <input type="text" class="form-control" name="veiculo_interesse" placeholder="Ex: Honda Civic 2020">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="novo">Novo</option>
+                <option value="contatado">Contatado</option>
+                <option value="interessado">Interessado</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Observações</label>
+              <textarea class="form-control" name="observacoes" rows="2" placeholder="Observações sobre o cliente..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-premium" onclick="saveCliente()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    let editModal;
+    let clienteModal;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      editModal = new bootstrap.Modal(document.getElementById('editModal'));
+      clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+      loadMarcas();
+      loadDashboard();
+      loadVehicles();
+      
+      document.getElementById('marca-select').addEventListener('change', loadModelos);
+      document.getElementById('modelo-select').addEventListener('change', loadAnos);
+      
+      document.getElementById('vehicle-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        formData.set('quilometragem', parseInt(formData.get('quilometragem')) || 0);
+        formData.set('preco', parseFloat(formData.get('preco')) || 0);
+        formData.set('ano', parseInt(formData.get('ano')));
+        
+        await fetch('/api/veiculos', {
+          method: 'POST',
+          body: formData
+        });
+        
+        e.target.reset();
+        document.getElementById('modelo-select').disabled = true;
+        document.getElementById('ano-select').disabled = true;
+        alert('Veículo cadastrado com sucesso!');
+        loadDashboard();
+        loadVehicles();
+      });
+    });
+
+    function showPage(page, event) {
+      document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+      if (event && event.target) event.target.closest('a').classList.add('active');
+      
+      ['dashboard', 'veiculos', 'historico', 'cadastrar', 'bot', 'clientes'].forEach(p => {
+        document.getElementById(p + '-page').style.display = p === page ? 'block' : 'none';
+      });
+      
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'veiculos') loadVehicles();
+      if (page === 'historico') loadHistorico();
+      if (page === 'bot') loadBotStats();
+      if (page === 'clientes') loadClientes();
+    }
+
+    async function loadBotStats() {
+      const [statsRes, connRes] = await Promise.all([
+        fetch('/api/bot/stats'),
+        fetch('/api/bot/connection')
+      ]);
+      const stats = await statsRes.json();
+      const conn = await connRes.json();
+      
+      const today = stats.today || { mensagens_recebidas: 0, mensagens_enviadas: 0, interessados: 0 };
+      document.getElementById('bot-msgs-recebidas').textContent = today.mensagens_recebidas || 0;
+      document.getElementById('bot-msgs-enviadas').textContent = today.mensagens_enviadas || 0;
+      document.getElementById('bot-interessados').textContent = today.interessados || 0;
+      document.getElementById('bot-connection').textContent = conn.connected ? 'Conectado' : 'Desconectado';
+      document.getElementById('bot-connection').className = conn.connected ? 'h2 text-success' : 'h2 text-danger';
+
+      const week = stats.week || [];
+      const month = stats.month || [];
+      
+      renderChart('chart-week', week.slice(0, 7).reverse());
+      renderChart('chart-month', month.slice(0, 30).reverse());
+
+      const logs = await fetch('/api/bot/logs?limit=20').then(r => r.json());
+      document.getElementById('bot-logs').innerHTML = logs.map(l => `
+        <tr>
+          <td>${new Date(l.timestamp).toLocaleString('pt-BR')}</td>
+          <td><span class="badge bg-${l.tipo === 'recebida' ? 'primary' : 'success'}">${l.tipo}</span></td>
+          <td>${l.telefone}</td>
+          <td>${l.acao}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="4" class="text-center">Nenhuma atividade registrada</td></tr>';
+    }
+
+    function renderChart(canvasId, data) {
+      const ctx = document.getElementById(canvasId);
+      if (!ctx) return;
+      
+      const existing = Chart.getChart(ctx);
+      if (existing) existing.destroy();
+
+      const labels = data.map(d => d.data);
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Recebidas', data: data.map(d => d.mensagens_recebidas), backgroundColor: 'rgba(54, 162, 235, 0.7)' },
+            { label: 'Enviadas', data: data.map(d => d.mensagens_enviadas), backgroundColor: 'rgba(75, 192, 192, 0.7)' }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    async function applyFilters() {
+      const busca = document.getElementById('filter-busca').value;
+      const anoDe = document.getElementById('filter-ano-de').value;
+      const anoAte = document.getElementById('filter-ano-ate').value;
+      const precoDe = document.getElementById('filter-preco-de').value;
+      const precoAte = document.getElementById('filter-preco-ate').value;
+      const status = document.getElementById('filter-status').value;
+
+      let url = '/api/veiculos?';
+      const params = [];
+      if (busca) params.push(`q=${encodeURIComponent(busca)}`);
+      if (anoDe) params.push(`anoDe=${anoDe}`);
+      if (anoAte) params.push(`anoAte=${anoAte}`);
+      if (precoDe) params.push(`precoDe=${precoDe}`);
+      if (precoAte) params.push(`precoAte=${precoAte}`);
+      if (status) params.push(`status=${status}`);
+      
+      url += params.join('&');
+      console.log('Buscando:', url);
+      
+      const vehicles = await fetch(url).then(r => r.json());
+      renderVehiclesTable(vehicles);
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-busca').value = '';
+      document.getElementById('filter-ano-de').value = '';
+      document.getElementById('filter-ano-ate').value = '';
+      document.getElementById('filter-preco-de').value = '';
+      document.getElementById('filter-preco-ate').value = '';
+      document.getElementById('filter-status').value = '';
+      loadVehicles();
+    }
+
+    async function loadVehicles() {
+      const vehicles = await fetch('/api/veiculos').then(r => r.json());
+      renderVehiclesTable(vehicles);
+    }
+
+    function renderVehiclesTable(vehicles) {
+      console.log('renderVehiclesTable:', vehicles);
+      if (!vehicles || vehicles.length === 0) {
+        document.getElementById('vehicles-table').innerHTML = '<tr><td colspan="7" class="text-center py-4">Nenhum veículo encontrado</td></tr>';
+        return;
+      }
+      document.getElementById('vehicles-table').innerHTML = vehicles.map(v => `
+        <tr>
+          <td><strong>${v.marca || ''} ${v.modelo || ''}</strong></td>
+          <td style="width:80px;">${v.ano || '-'}</td>
+          <td style="width:90px;">${v.placa || '-'}</td>
+          <td style="width:100px;">${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td style="width:120px;">R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td style="width:100px;"><span class="status-badge status-${v.status}">${v.status === 'disponivel' ? 'Disponível' : 'Vendido'}</span></td>
+          <td style="width:100px;">
+            <button class="btn btn-sm btn-action btn-outline-primary" onclick="editVehicle(${v.id})">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-action btn-outline-${v.status === 'disponivel' ? 'success' : 'warning'}" 
+              onclick="toggleStatus(${v.id}, '${v.status === 'disponivel' ? 'vendido' : 'disponivel'}')">
+              <i class="bi bi-arrow-repeat"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadHistorico() {
+      const vehicles = await fetch('/api/veiculos?status=vendido').then(r => r.json());
+      if (!vehicles || vehicles.length === 0) {
+        document.getElementById('historico-table').innerHTML = '<tr><td colspan="6" class="text-center py-4">Nenhuma venda registrada</td></tr>';
+        return;
+      }
+      document.getElementById('historico-table').innerHTML = vehicles.map(v => `
+        <tr>
+          <td><strong>${v.marca || ''} ${v.modelo || ''}</strong></td>
+          <td style="width:80px;">${v.ano || '-'}</td>
+          <td style="width:100px;">${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td style="width:120px;">R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td style="width:100px;">${v.updated_at ? new Date(v.updated_at).toLocaleDateString('pt-BR') : '-'}</td>
+          <td style="width:100px;">
+            <button class="btn btn-sm btn-action btn-outline-primary" onclick="editVehicle(${v.id})">
+              <i class="bi bi-eye"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadDashboard() {
+      const available = await fetch('/api/veiculos?status=disponivel').then(r => r.json());
+      const sold = await fetch('/api/veiculos?status=vendido').then(r => r.json());
+      const all = await fetch('/api/veiculos').then(r => r.json());
+      
+      document.getElementById('total-veiculos').textContent = all.length;
+      document.getElementById('disponiveis').textContent = available.length;
+      document.getElementById('vendidos').textContent = sold.length;
+      
+      const totalValue = available.reduce((sum, v) => sum + (v.preco || 0), 0);
+      document.getElementById('valor-total').textContent = 'R$ ' + totalValue.toLocaleString('pt-BR');
+      
+      const recent = all.slice(-5).reverse();
+      document.getElementById('recent-vehicles').innerHTML = recent.map(v => `
+        <tr>
+          <td><strong>${v.marca} ${v.modelo}</td>
+          <td>${v.ano}</td>
+          <td>${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td>R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td><span class="status-badge status-${v.status}">${v.status}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadMarcas() {
+      const marcas = await fetch('/api/marcas').then(r => r.json());
+      const select = document.getElementById('marca-select');
+      select.innerHTML = '<option value="">Selecione a marca...</option>' +
+        marcas.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
+    }
+
+    async function loadModelos() {
+      const marca = document.getElementById('marca-select').value;
+      const modeloSelect = document.getElementById('modelo-select');
+      const anoSelect = document.getElementById('ano-select');
+      
+      if (!marca) {
+        modeloSelect.innerHTML = '<option value="">Selecione a marca primeiro...</option>';
+        modeloSelect.disabled = true;
+        anoSelect.innerHTML = '<option value="">Selecione o modelo primeiro...</option>';
+        anoSelect.disabled = true;
+        return;
+      }
+
+      const modelos = await fetch(`/api/marcas/${marca}/modelos`).then(r => r.json());
+      modeloSelect.innerHTML = '<option value="">Selecione o modelo...</option>' +
+        modelos.map(m => `<option value="${m}">${m}</option>`).join('');
+      modeloSelect.disabled = false;
+      anoSelect.innerHTML = '<option value="">Selecione o modelo primeiro...</option>';
+      anoSelect.disabled = true;
+    }
+
+    async function loadAnos() {
+      const modelo = document.getElementById('modelo-select').value;
+      const anoSelect = document.getElementById('ano-select');
+      
+      if (!modelo) {
+        anoSelect.innerHTML = '<option value="">Selecione o modelo primeiro...</option>';
+        anoSelect.disabled = true;
+        return;
+      }
+
+      const anos = await fetch(`/api/modelos/${modelo}/anos`).then(r => r.json());
+      anoSelect.innerHTML = '<option value="">Selecione o ano...</option>' +
+        anos.map(a => `<option value="${a}">${a}</option>`).join('');
+      anoSelect.disabled = false;
+    }
+    async function loadVehicles(search) {
+      const url = search ? `/api/search?q=${encodeURIComponent(search)}` : '/api/veiculos';
+      const vehicles = await fetch(url).then(r => r.json());
+      
+      document.getElementById('vehicles-table').innerHTML = vehicles.map(v => `
+        <tr>
+          <td><strong>${v.marca} ${v.modelo}</strong></td>
+          <td>${v.ano}</td>
+          <td>${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td>R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td><span class="status-badge status-${v.status}">${v.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-action btn-outline-primary" onclick="editVehicle(${v.id})">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-action btn-outline-${v.status === 'disponivel' ? 'success' : 'warning'}" 
+              onclick="toggleStatus(${v.id}, '${v.status === 'disponivel' ? 'vendido' : 'disponivel'}')">
+              <i class="bi bi-arrow-repeat"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function searchVehicles() {
+      const q = document.getElementById('search-input').value;
+      loadVehicles(q);
+    }
+
+    async function editVehicle(id) {
+      const v = await fetch(`/api/veiculos/${id}`).then(r => r.json());
+      const form = document.getElementById('edit-form');
+      form.id.value = v.id;
+      form.marca.value = v.marca;
+      form.modelo.value = v.modelo;
+      form.ano.value = v.ano;
+      form.cor.value = v.cor || '';
+      form.quilometragem.value = v.quilometragem || 0;
+      form.placa.value = v.placa || '';
+      form.preco.value = v.preco;
+      form.status.value = v.status;
+      form.descricao.value = v.descricao || '';
+      const fotos = v.fotos ? (Array.isArray(v.fotos) ? v.fotos : JSON.parse(v.fotos)).join(', ') : '';
+      form.fotos.value = fotos;
+      editModal.show();
+    }
+
+    async function saveEdit() {
+      const form = document.getElementById('edit-form');
+      const formData = new FormData(form);
+      formData.set('quilometragem', parseInt(formData.get('quilometragem')) || 0);
+      formData.set('preco', parseFloat(formData.get('preco')) || 0);
+      formData.set('ano', parseInt(formData.get('ano')));
+      
+      const id = formData.get('id');
+      formData.delete('id');
+      
+      await fetch(`/api/veiculos/${id}`, {
+        method: 'PUT',
+        body: formData
+      });
+      
+      editModal.hide();
+      loadDashboard();
+      loadVehicles();
+    }
+
+    async function toggleStatus(id, newStatus) {
+      await fetch(`/api/veiculos/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      loadDashboard();
+      loadVehicles();
+      loadHistorico();
+    }
+
+    async function loadClientes() {
+      const q = document.getElementById('filter-cliente').value;
+      const url = q ? `/api/clientes?q=${encodeURIComponent(q)}` : '/api/clientes';
+      const clientes = await fetch(url).then(r => r.json());
+      renderClientesTable(clientes);
+    }
+
+    function renderClientesTable(clientes) {
+      if (!clientes || clientes.length === 0) {
+        document.getElementById('clientes-table').innerHTML = '<tr><td colspan="8" class="text-center py-4">Nenhum cliente encontrado</td></tr>';
+        return;
+      }
+      const statusClass = { 'novo': 'primary', 'contatado': 'info', 'interessado': 'warning', 'inativo': 'secondary' };
+      document.getElementById('clientes-table').innerHTML = clientes.map(c => `
+        <tr>
+          <td><strong>${c.nome || '-'}</strong></td>
+          <td>${c.telefone || '-'}</td>
+          <td>${c.email || '-'}</td>
+          <td>${c.veiculo_interesse || '-'}</td>
+          <td><span class="badge bg-${statusClass[c.status] || 'secondary'}">${c.status || 'novo'}</span></td>
+          <td>${c.fonte || '-'}</td>
+          <td>${c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '-'}</td>
+          <td>
+            <button class="btn btn-sm btn-action btn-outline-primary" onclick="editCliente(${c.id})">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openClienteModal(id = null) {
+      const form = document.getElementById('cliente-form');
+      form.reset();
+      form.id.value = '';
+      document.getElementById('clienteModalTitle').textContent = id ? 'Editar Cliente' : 'Novo Cliente';
+      clienteModal.show();
+    }
+
+    async function editCliente(id) {
+      const c = await fetch(`/api/clientes/${id}`).then(r => r.json());
+      const form = document.getElementById('cliente-form');
+      form.id.value = c.id;
+      form.nome.value = c.nome || '';
+      form.telefone.value = c.telefone || '';
+      form.email.value = c.email || '';
+      form.veiculo_interesse.value = c.veiculo_interesse || '';
+      form.status.value = c.status || 'novo';
+      form.observacoes.value = c.observacoes || '';
+      document.getElementById('clienteModalTitle').textContent = 'Editar Cliente';
+      clienteModal.show();
+    }
+
+    async function saveCliente() {
+      const form = document.getElementById('cliente-form');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      
+      const id = data.id;
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/api/clientes/${id}` : '/api/clientes';
+      
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      clienteModal.hide();
+      loadClientes();
+    }
+  </script>
+</body>
+</html>

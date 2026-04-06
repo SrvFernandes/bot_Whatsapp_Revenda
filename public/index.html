@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarFlow - Gestão Premium</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #16213e;
+      --accent: #c9a227;
+      --accent-light: #e8d5a3;
+      --gold-gradient: linear-gradient(135deg, #c9a227 0%, #f4e4bc 50%, #c9a227 100%);
+      --card-bg: #ffffff;
+      --text-dark: #1a1a2e;
+      --text-muted: #6c757d;
+      --border-light: #e0e0e0;
+    }
+    body { 
+      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%); 
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+    .sidebar { 
+      background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%); 
+      height: 100vh; 
+      color: white;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .sidebar-brand {
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.2);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-subtitle {
+      font-size: 0.7rem;
+      color: var(--accent-light);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-top: 5px;
+    }
+    .sidebar a { 
+      color: rgba(255,255,255,0.8); 
+      text-decoration: none; 
+      padding: 15px 25px; 
+      display: block; 
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .sidebar a:hover, .sidebar a.active { 
+      background: rgba(201, 162, 39, 0.15);
+      color: white;
+      border-left-color: var(--accent);
+    }
+    .sidebar a i { margin-right: 10px; width: 20px; }
+    .card { 
+      border: none; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      background: var(--card-bg);
+    }
+    .stat-card {
+      padding: 25px;
+      position: relative;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+    .stat-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+    }
+    .stat-card small {
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.75rem;
+    }
+    .btn-premium {
+      background: var(--gold-gradient);
+      color: var(--primary);
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .status-badge { 
+      font-size: 0.75rem; 
+      padding: 6px 14px; 
+      border-radius: 20px; 
+      font-weight: 500;
+    }
+    .status-disponivel { background: #d4edda; color: #155724; }
+    .status-vendido { background: #f8d7da; color: #721c24; }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      color: var(--text-dark);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      position: relative;
+      display: inline-block;
+    }
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--gold-gradient);
+      border-radius: 2px;
+    }
+    .main-content {
+      margin-left: 220px;
+      padding: 20px;
+      padding-bottom: 80px;
+      min-height: 100vh;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 220px;
+      right: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: rgba(255,255,255,0.7);
+      padding: 15px 25px;
+      text-align: center;
+      font-size: 0.85rem;
+      z-index: 100;
+    }
+    .table thead th {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      font-weight: 500;
+      padding: 12px;
+      border: none;
+    }
+    .table td {
+      padding: 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .table tbody tr:hover {
+      background: rgba(201, 162, 39, 0.05);
+    }
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .login-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+    }
+    .user-info {
+      display: none;
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-logo" id="loginLogo">CarFlow</div>
+      <p class="text-muted mb-4">Gestão Premium</p>
+      <form id="loginForm">
+        <div class="mb-3">
+          <input type="email" class="form-control form-control-lg" id="loginEmail" placeholder="Email" required>
+        </div>
+        <div class="mb-3">
+          <input type="password" class="form-control form-control-lg" id="loginSenha" placeholder="Senha" required>
+        </div>
+        <button type="submit" class="btn btn-premium w-100 btn-lg">Entrar</button>
+      </form>
+      <div id="loginError" class="alert alert-danger mt-3" style="display: none;"></div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <img src="/Logo.png" alt="Logo" id="sidebar-logo" style="max-width: 120px; margin-bottom: 10px;">
+      <div class="logo" id="sidebar-nome-loja">CarFlow</div>
+      <div class="logo-subtitle">Gestão Premium</div>
+    </div>
+    <nav class="nav flex-column mt-3">
+      <a href="#" class="nav-link active" onclick="showPage('dashboard', event)">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="#" class="nav-link" onclick="showPage('veiculos', event)">
+        <i class="bi bi-car-front-fill"></i> Veículos
+      </a>
+      <a href="#" class="nav-link" onclick="showPage('historico', event)">
+        <i class="bi bi-clock-history"></i> Histórico Vendas
+      </a>
+      <a href="#" class="nav-link" onclick="showPage('cadastrar', event)">
+        <i class="bi bi-plus-circle"></i> Cadastrar
+      </a>
+      <a href="#" class="nav-link" onclick="showPage('bot', event)">
+        <i class="bi bi-robot"></i> WhatsApp
+        <span id="conversas-badge" class="badge bg-danger ms-1" style="display: none;">0</span>
+      </a>
+      <a href="#" class="nav-link" onclick="showPage('clientes', event)">
+        <i class="bi bi-people"></i> Clientes
+      </a>
+      <a href="#" class="nav-link" onclick="showPage('config', event)">
+        <i class="bi bi-gear"></i> Configurações
+      </a>
+      <div id="user-nav"></div>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <!-- Dashboard -->
+    <div id="dashboard-page">
+      <h4 class="page-title">Dashboard</h4>
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <h2 id="total-veiculos">0</h2>
+            <small>Total de Veículos</small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <h2 id="disponiveis" class="text-success">0</h2>
+            <small>Disponíveis</small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <h2 id="vendidos" class="text-danger">0</h2>
+            <small>Vendidos</small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card">
+            <h2 id="valor-total">R$ 0</h2>
+            <small>Valor em Estoque</small>
+          </div>
+        </div>
+      </div>
+      <div class="card p-4">
+        <h5 class="mb-4" style="font-family: 'Playfair Display', serif; color: var(--text-dark);">Veículos Recentes</h5>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Marca/Modelo</th>
+                <th>Ano</th>
+                <th>KM</th>
+                <th>Preço</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-vehicles"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Veículos -->
+    <div id="veiculos-page" style="display: none;">
+      <h4 class="page-title">Veículos</h4>
+      <div class="card mb-4 p-3">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <input type="text" class="form-control" id="filter-busca" placeholder="Buscar...">
+          </div>
+          <div class="col-md-2">
+            <select class="form-select" id="filter-status">
+              <option value="">Todos</option>
+              <option value="disponivel">Disponível</option>
+              <option value="vendido">Vendido</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary" onclick="loadVehicles()">Buscar</button>
+          </div>
+        </div>
+      </div>
+      <div class="card p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Veículo</th>
+                <th>Ano</th>
+                <th>KM</th>
+                <th>Preço</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="vehicles-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Histórico -->
+    <div id="historico-page" style="display: none;">
+      <h4 class="page-title">Histórico de Vendas</h4>
+      <div class="card p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Veículo</th>
+                <th>Ano</th>
+                <th>KM</th>
+                <th>Preço Venda</th>
+                <th>Data Venda</th>
+              </tr>
+            </thead>
+            <tbody id="historico-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cadastrar -->
+    <div id="cadastrar-page" style="display: none;">
+      <h4 class="page-title">Cadastrar Veículo</h4>
+      <div class="card p-4">
+        <form id="vehicle-form">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Marca *</label>
+              <select class="form-select" name="marca" id="marca-select" required>
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Modelo *</label>
+              <select class="form-select" name="modelo" id="modelo-select" required disabled>
+                <option value="">Selecione a marca...</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Ano *</label>
+              <select class="form-select" name="ano" id="ano-select" required disabled>
+                <option value="">Selecione o modelo...</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Cor</label>
+              <input type="text" class="form-control" name="cor">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Quilometragem</label>
+              <input type="number" class="form-control" name="quilometragem" value="0">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Preço</label>
+              <input type="number" class="form-control" name="preco" step="0.01">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Placa</label>
+              <input type="text" class="form-control" name="placa">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="disponivel">Disponível</option>
+                <option value="vendido">Vendido</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" name="descricao" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn btn-premium">Cadastrar Veículo</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bot WhatsApp + Conversas (Unificado) -->
+    <div id="bot-page" style="display: none;">
+      <h4 class="page-title">Mensagens WhatsApp</h4>
+      
+      <ul class="nav nav-tabs mb-3" id="mensagensTab" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="conversas-tab" data-bs-toggle="tab" data-bs-target="#conversas-content" type="button">
+            <i class="bi bi-chat-dots"></i> Conversas
+            <span id="conversas-badge" class="badge bg-danger ms-1" style="display: none;">0</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="estatisticas-tab" data-bs-toggle="tab" data-bs-target="#estatisticas-content" type="button">
+            <i class="bi bi-graph-up"></i> Estatísticas
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs-content" type="button">
+            <i class="bi bi-activity"></i> Logs
+          </button>
+        </li>
+      </ul>
+      
+      <div class="tab-content" id="mensagensTabContent">
+        <!-- Aba Conversas -->
+        <div class="tab-pane fade show active" id="conversas-content">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="busca-conversa" placeholder="Buscar por nome ou telefone..." oninput="loadConversas()">
+            </div>
+            <div class="col-md-2">
+              <select class="form-select" id="filtro-status-conversa" onchange="loadConversas()">
+                <option value="">Todas</option>
+                <option value="aberta">Abertas</option>
+                <option value="atendida">Atendidas</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="usuario-logado">
+                <option value="Sérgio">Sérgio (Admin)</option>
+                <option value="João">João (Vendedor)</option>
+                <option value="Maria">Maria (Vendedor)</option>
+              </select>
+            </div>
+            <div class="col-md-3 text-end">
+              <span class="badge bg-warning" id="contador-conversas">0 abertas</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card" style="max-height: 60vh; overflow-y: auto;">
+                <div class="card-header bg-dark text-white">Contatos</div>
+                <div class="list-group list-group-flush" id="conversas-list"></div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="card" id="chat-area" style="display: none;">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                  <span id="chat-nome">Conversa</span>
+                  <div>
+                    <button class="btn btn-sm btn-outline-warning me-1" onclick="abrirEdicaoCliente()">
+                      <i class="bi bi-person-edit"></i> Cliente
+                    </button>
+                    <button class="btn btn-sm btn-outline-light me-1" onclick="verHistoricoCliente()">
+                      <i class="bi bi-clock-history"></i> Histórico
+                    </button>
+                    <button class="btn btn-sm btn-success" id="btn-atender" onclick="atenderConversa()">Atender</button>
+                  </div>
+                </div>
+                <div class="card-body" id="chat-mensagens" style="height: 350px; overflow-y: auto;"></div>
+                <div class="card-footer">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="mensagem-input" placeholder="Digite sua mensagem...">
+                    <button class="btn btn-premium" onclick="enviarMensagem()">Enviar</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card p-5 text-center text-muted" id="chat-vazio">
+                <i class="bi bi-chat-dots" style="font-size: 3rem;"></i>
+                <p class="mt-3">Selecione uma conversa</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Aba Estatísticas -->
+        <div class="tab-pane fade" id="estatisticas-content">
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-msgs-recebidas" class="text-primary">0</h2>
+                <small>Mensagens Recebidas</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-msgs-enviadas" class="text-success">0</h2>
+                <small>Mensagens Enviadas</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-interessados" class="text-warning">0</h2>
+                <small>Interessados</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="card stat-card">
+                <h2 id="bot-connection" class="text-danger">Desconectado</h2>
+                <small>Status do Bot</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Aba Logs -->
+        <div class="tab-pane fade" id="logs-content">
+          <div class="card p-4">
+            <h5 class="mb-3">Atividade Recente</h5>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Data/Hora</th>
+                    <th>Tipo</th>
+                    <th>Telefone</th>
+                    <th>Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="bot-logs"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clientes -->
+    <div id="clientes-page" style="display: none;">
+      <h4 class="page-title">Clientes</h4>
+      <div class="card mb-4 p-3">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="filter-cliente" placeholder="Buscar cliente...">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary" onclick="loadClientes()">Buscar</button>
+          </div>
+          <div class="col-md-6 text-end">
+            <button class="btn btn-premium" onclick="openClienteModal()">
+              <i class="bi bi-person-plus"></i> Novo Cliente
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Veículo de Interesse</th>
+                <th>Status</th>
+                <th>Cadastro</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="clientes-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configurações -->
+    <div id="config-page" style="display: none;">
+      <h4 class="page-title">Configurações</h4>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card p-4">
+            <h5 class="mb-4">Dados da Loja</h5>
+            <div class="mb-3">
+              <label class="form-label">Nome da Loja</label>
+              <input type="text" class="form-control" id="config-nome-loja" placeholder="Ex: Caio Veículos">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Telefone de Contato</label>
+              <input type="text" class="form-control" id="config-telefone" placeholder="Ex: 11999999999">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Mensagem de Boas-vindas</label>
+                  <textarea class="form-control" id="config-mensagem" rows="3" placeholder="Olá! Sou o assistente..."></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Groq API Key</label>
+                  <input type="text" class="form-control" id="config-groq-api-key" placeholder="Insira sua Groq API Key">
+                </div>
+                <button class="btn btn-premium" onclick="salvarConfig()">
+                  <i class="bi bi-save"></i> Salvar Configurações
+                </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card p-4">
+            <h5 class="mb-4">Preview da Mensagem</h5>
+            <div class="bg-light p-3 rounded" id="preview-mensagem">
+              <small class="text-muted">A mensagem que o cliente receberá ao iniciar a conversa:</small>
+              <hr>
+              <div id="preview-texto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card p-4">
+            <h5 class="mb-4">Conexão WhatsApp</h5>
+            <div class="text-center">
+              <div id="whatsapp-status" class="mb-3">
+                <span class="badge bg-secondary">Desconectado</span>
+              </div>
+              <div id="qrcode-container" class="mb-3" style="display: none;">
+                <p class="text-muted small">Escaneie o QR Code com seu WhatsApp</p>
+                <img id="qrcode-img" style="max-width: 200px; border: 1px solid #ddd; border-radius: 8px;">
+              </div>
+                <div id="conectado-container" class="mb-3" style="display: none;">
+                <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                <p class="text-success mt-2">WhatsApp Conectado!</p>
+              </div>
+              <button class="btn btn-outline-danger btn-sm" id="btn-desconectar" onclick="desconectarBot()" style="display: none;">
+                <i class="bi bi-x-circle"></i> Desconectar
+              </button>
+              <button class="btn btn-premium btn-sm" id="btn-conectar" onclick="conectarBot()" style="display: none;">
+                <i class="bi bi-plug"></i> Conectar WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card p-4">
+            <h5 class="mb-4">📢 Broadcast WhatsApp</h5>
+            <p class="text-muted small">Enviar mensagem para todos os clientes cadastrados</p>
+            <div class="mb-3">
+              <textarea class="form-control" id="broadcast-mensagem" rows="4" placeholder="Digite sua mensagem..."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Filtrar por status:</label>
+              <select class="form-select" id="broadcast-filtro">
+                <option value="todos">Todos os clientes</option>
+                <option value="interessado">Apenas interessados</option>
+                <option value="novo">Apenas novos</option>
+                <option value="contatado">Apenas contatados</option>
+              </select>
+            </div>
+            <button class="btn btn-premium" onclick="enviarBroadcast()" id="btn-broadcast">
+              <i class="bi bi-send"></i> Enviar para Todos
+            </button>
+            <div id="broadcast-result" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4" id="usuarios-section" style="display: none;">
+        <div class="col-12">
+          <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">Gerenciamento de Usuários</h5>
+              <button class="btn btn-premium btn-sm" onclick="openUsuarioModal()">
+                <i class="bi bi-plus-circle"></i> Novo Usuário
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="usuarios-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Nível</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversas -->
+    <div id="conversas-page" style="display: none;">
+      <h4 class="page-title">Conversas</h4>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" id="busca-conversa" placeholder="Buscar por nome ou telefone..." oninput="loadConversas()">
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="filtro-status-conversa" onchange="loadConversas()">
+            <option value="">Todas</option>
+            <option value="aberta">Abertas</option>
+            <option value="atendida">Atendidas</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="usuario-logado">
+            <option value="Sérgio">Sérgio (Admin)</option>
+            <option value="João">João (Vendedor)</option>
+            <option value="Maria">Maria (Vendedor)</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card" style="max-height: 70vh; overflow-y: auto;">
+            <div class="card-header bg-dark text-white d-flex justify-content-between">
+              <span>Contatos</span>
+              <span id="contador-conversas" class="badge bg-warning">0</span>
+            </div>
+            <div class="list-group list-group-flush" id="conversas-list"></div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="card" id="chat-area" style="display: none;">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+              <span id="chat-nome">Conversa</span>
+              <div>
+                <button class="btn btn-sm btn-outline-warning me-1" onclick="abrirEdicaoCliente()">
+                  <i class="bi bi-person-edit"></i> Cliente
+                </button>
+                <button class="btn btn-sm btn-outline-light me-1" onclick="verHistoricoCliente()">
+                  <i class="bi bi-clock-history"></i> Histórico
+                </button>
+                <button class="btn btn-sm btn-success" id="btn-atender" onclick="atenderConversa()">Atender</button>
+              </div>
+            </div>
+            <div class="card-body" id="chat-mensagens" style="height: 400px; overflow-y: auto;"></div>
+            <div class="card-footer">
+              <div class="input-group">
+                <input type="text" class="form-control" id="mensagem-input" placeholder="Digite sua mensagem...">
+                <button class="btn btn-premium" onclick="enviarMensagem()">Enviar</button>
+              </div>
+            </div>
+          </div>
+          <div class="card p-5 text-center text-muted" id="chat-vazio">
+            <i class="bi bi-chat-dots" style="font-size: 3rem;"></i>
+            <p class="mt-3">Selecione uma conversa para começar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Criado por <strong>Sérgio Fernandes</strong>
+  </div>
+
+  <!-- Modal Editar Veículo -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Veículo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="edit-form">
+            <input type="hidden" name="id">
+            <div class="mb-3">
+              <label class="form-label">Marca</label>
+              <input type="text" class="form-control" name="marca" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Modelo</label>
+              <input type="text" class="form-control" name="modelo" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ano</label>
+              <input type="number" class="form-control" name="ano" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Preço</label>
+              <input type="number" class="form-control" name="preco" step="0.01">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="disponivel">Disponível</option>
+                <option value="vendido">Vendido</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-premium" onclick="saveEdit()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cliente -->
+  <div class="modal fade" id="clienteModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="clienteModalTitle">Novo Cliente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="cliente-form">
+            <input type="hidden" name="id">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" name="nome">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Telefone</label>
+              <input type="text" class="form-control" name="telefone">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Veículo de Interesse</label>
+              <input type="text" class="form-control" name="veiculo_interesse">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" name="status">
+                <option value="novo">Novo</option>
+                <option value="contatado">Contatado</option>
+                <option value="interessado">Interessado</option>
+                <option value="inativo">Inativo</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Observações</label>
+              <textarea class="form-control" name="observacoes" rows="2"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-premium" onclick="saveCliente()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Notificar Interessados -->
+  <div class="modal fade" id="notificarModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Clientes Interessados</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="interessados-content"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-success" id="btn-enviar-notificacoes" onclick="enviarNotificacoes()">
+            <i class="bi bi-send"></i> Enviar para Todos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Usuário -->
+  <div class="modal fade" id="usuarioModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="usuarioModalTitle">Novo Usuário</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="usuario-form">
+            <input type="hidden" id="usuario-id">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" id="usuario-nome" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" id="usuario-email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Senha</label>
+              <input type="password" class="form-control" id="usuario-senha" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nível</label>
+              <select class="form-select" id="usuario-nivel">
+                <option value="vendedor">Vendedor</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-premium" onclick="salvarUsuario()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let editModal, clienteModal, notificarModal, usuarioModal;
+    let veiculoIdParaNotificar;
+    let currentUser = null;
+    
+    async function checkLogin() {
+      const savedUser = localStorage.getItem('currentUser');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        document.getElementById('loginOverlay').style.display = 'none';
+        updateUserUI();
+      }
+      
+      const config = await fetch('/api/config').then(r => r.json());
+      const nomeLoja = config?.nome_loja || 'CarFlow';
+      document.getElementById('loginLogo').textContent = nomeLoja;
+      document.getElementById('sidebar-nome-loja').textContent = nomeLoja;
+    }
+    
+    function updateUserUI() {
+      if (currentUser) {
+        const userNav = document.getElementById('user-nav');
+        if (userNav) {
+          userNav.innerHTML = `
+            <a href="#" class="nav-link" onclick="logout()">
+              <i class="bi bi-box-arrow-right"></i> Sair (${currentUser.nome})
+            </a>
+          `;
+        }
+      }
+    }
+    
+    async function doLogin(email, senha) {
+      const res = await fetch('/api/usuarios/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        currentUser = data.usuario;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        document.getElementById('loginOverlay').style.display = 'none';
+        updateUserUI();
+        loadDashboard();
+        loadVehicles();
+        return true;
+      }
+      return false;
+    }
+    
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      document.getElementById('loginOverlay').style.display = 'flex';
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      editModal = new bootstrap.Modal(document.getElementById('editModal'));
+      clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+      notificarModal = new bootstrap.Modal(document.getElementById('notificarModal'));
+      loadMarcas();
+      
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const senha = document.getElementById('loginSenha').value;
+        const success = await doLogin(email, senha);
+        if (!success) {
+          document.getElementById('loginError').style.display = 'block';
+          document.getElementById('loginError').textContent = 'Email ou senha incorretos';
+        }
+      });
+      
+      checkLogin();
+      
+      document.getElementById('marca-select').addEventListener('change', loadModelos);
+      document.getElementById('modelo-select').addEventListener('change', loadAnos);
+      
+      document.getElementById('vehicle-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        
+        try {
+          const response = await fetch('/api/veiculos', { method: 'POST', body: formData });
+          const result = await response.json();
+          
+          console.log('Veículo cadastrado:', result);
+          e.target.reset();
+          
+          if (result.interessados && result.interessados.length > 0) {
+            veiculoIdParaNotificar = result.id;
+            const html = result.interessados.map(c => `
+              <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                <div>
+                  <strong>${c.nome || 'Sem nome'}</strong><br>
+                  <small class="text-muted">${c.telefone}</small><br>
+                  <small class="text-info">Interesse: ${c.veiculo_interesse}</small>
+                </div>
+              </div>
+            `).join('');
+            
+            document.getElementById('interessados-content').innerHTML = `
+              <p class="alert alert-info">
+                <i class="bi bi-info-circle"></i> 
+                Encontramos <strong>${result.interessados.length}</strong> cliente(s) interessados em veículos similares!
+              </p>
+              ${html}
+            `;
+            document.getElementById('btn-enviar-notificacoes').style.display = 'block';
+            notificarModal.show();
+          } else {
+            alert('Veículo cadastrado!');
+          }
+          
+          loadDashboard();
+          loadVehicles();
+        } catch (err) {
+          console.error('Erro ao cadastrar:', err);
+          alert('Erro ao cadastrar veículo');
+        }
+        
+        loadDashboard();
+        loadVehicles();
+      });
+    });
+
+    function showPage(page, event) {
+      document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+      if (event && event.target) event.target.closest('a').classList.add('active');
+      
+      ['dashboard', 'veiculos', 'historico', 'cadastrar', 'bot', 'clientes', 'config'].forEach(p => {
+        document.getElementById(p + '-page').style.display = p === page ? 'block' : 'none';
+      });
+      
+      if (page === 'dashboard') loadDashboard();
+      if (page === 'veiculos') loadVehicles();
+      if (page === 'historico') loadHistorico();
+      if (page === 'bot') { loadBotStats(); loadConversas(); }
+      if (page === 'clientes') loadClientes();
+      if (page === 'config') loadConfig();
+    }
+
+    async function loadDashboard() {
+      const available = await fetch('/api/veiculos?status=disponivel').then(r => r.json());
+      const sold = await fetch('/api/veiculos?status=vendido').then(r => r.json());
+      const all = await fetch('/api/veiculos').then(r => r.json());
+      
+      document.getElementById('total-veiculos').textContent = all.length;
+      document.getElementById('disponiveis').textContent = available.length;
+      document.getElementById('vendidos').textContent = sold.length;
+      
+      const totalValue = available.reduce((sum, v) => sum + (v.preco || 0), 0);
+      document.getElementById('valor-total').textContent = 'R$ ' + totalValue.toLocaleString('pt-BR');
+      
+      const recent = all.slice(-5).reverse();
+      document.getElementById('recent-vehicles').innerHTML = recent.map(v => `
+        <tr>
+          <td><strong>${v.marca} ${v.modelo}</strong></td>
+          <td>${v.ano}</td>
+          <td>${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td>R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td><span class="status-badge status-${v.status}">${v.status}</span></td>
+        </tr>
+      `).join('') || '<tr><td colspan="5">Nenhum veículo</td></tr>';
+    }
+
+    async function loadVehicles() {
+      const busca = document.getElementById('filter-busca').value;
+      const status = document.getElementById('filter-status').value;
+      let url = '/api/veiculos?';
+      if (busca) url += `q=${encodeURIComponent(busca)}&`;
+      if (status) url += `status=${status}`;
+      const vehicles = await fetch(url).then(r => r.json());
+      
+      document.getElementById('vehicles-table').innerHTML = vehicles.map(v => `
+        <tr>
+          <td><strong>${v.marca} ${v.modelo}</strong></td>
+          <td>${v.ano}</td>
+          <td>${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td>R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td><span class="status-badge status-${v.status}">${v.status}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" onclick="editVehicle(${v.id})"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-${v.status === 'disponivel' ? 'success' : 'warning'}" onclick="toggleStatus(${v.id}, '${v.status === 'disponivel' ? 'vendido' : 'disponivel'}')">
+              <i class="bi bi-arrow-repeat"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="6">Nenhum veículo</td></tr>';
+    }
+
+    async function loadHistorico() {
+      const vehicles = await fetch('/api/veiculos?status=vendido').then(r => r.json());
+      document.getElementById('historico-table').innerHTML = vehicles.map(v => `
+        <tr>
+          <td><strong>${v.marca} ${v.modelo}</strong></td>
+          <td>${v.ano}</td>
+          <td>${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
+          <td>R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
+          <td>${v.updated_at ? new Date(v.updated_at).toLocaleDateString('pt-BR') : '-'}</td>
+        </tr>
+      `).join('') || '<tr><td colspan="5">Nenhuma venda</td></tr>';
+    }
+
+    async function loadMarcas() {
+      const marcas = await fetch('/api/marcas').then(r => r.json());
+      const select = document.getElementById('marca-select');
+      select.innerHTML = '<option value="">Selecione...</option>' +
+        marcas.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
+    }
+
+    async function loadModelos() {
+      const marca = document.getElementById('marca-select').value;
+      const modeloSelect = document.getElementById('modelo-select');
+      if (!marca) {
+        modeloSelect.innerHTML = '<option value="">Selecione a marca...</option>';
+        modeloSelect.disabled = true;
+        return;
+      }
+      const modelos = await fetch(`/api/marcas/${marca}/modelos`).then(r => r.json());
+      modeloSelect.innerHTML = '<option value="">Selecione...</option>' + modelos.map(m => `<option value="${m}">${m}</option>`).join('');
+      modeloSelect.disabled = false;
+    }
+
+    async function loadAnos() {
+      const modelo = document.getElementById('modelo-select').value;
+      const anoSelect = document.getElementById('ano-select');
+      if (!modelo) {
+        anoSelect.innerHTML = '<option value="">Selecione o modelo...</option>';
+        anoSelect.disabled = true;
+        return;
+      }
+      const anos = await fetch(`/api/modelos/${modelo}/anos`).then(r => r.json());
+      anoSelect.innerHTML = '<option value="">Selecione...</option>' + anos.map(a => `<option value="${a}">${a}</option>`).join('');
+      anoSelect.disabled = false;
+    }
+
+    async function editVehicle(id) {
+      const v = await fetch(`/api/veiculos/${id}`).then(r => r.json());
+      const form = document.getElementById('edit-form');
+      form.id.value = v.id;
+      form.marca.value = v.marca;
+      form.modelo.value = v.modelo;
+      form.ano.value = v.ano;
+      form.preco.value = v.preco;
+      form.status.value = v.status;
+      editModal.show();
+    }
+
+    async function saveEdit() {
+      const form = document.getElementById('edit-form');
+      const formData = new FormData(form);
+      const id = formData.get('id');
+      formData.delete('id');
+      await fetch(`/api/veiculos/${id}`, { method: 'PUT', body: formData });
+      editModal.hide();
+      loadDashboard();
+      loadVehicles();
+    }
+
+    async function toggleStatus(id, newStatus) {
+      await fetch(`/api/veiculos/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      loadDashboard();
+      loadVehicles();
+      loadHistorico();
+    }
+
+    async function loadBotStats() {
+      try {
+        const stats = await fetch('/api/bot/stats').then(r => r.json());
+        const conn = await fetch('/api/bot/connection').then(r => r.json());
+        
+        const today = stats.today || {};
+        document.getElementById('bot-msgs-recebidas').textContent = today.mensagens_recebidas || 0;
+        document.getElementById('bot-msgs-enviadas').textContent = today.mensagens_enviadas || 0;
+        document.getElementById('bot-interessados').textContent = today.interessados || 0;
+        document.getElementById('bot-connection').textContent = conn.connected ? 'Conectado' : 'Desconectado';
+        document.getElementById('bot-connection').className = conn.connected ? 'h2 text-success' : 'h2 text-danger';
+
+        const logs = await fetch('/api/bot/logs?limit=20').then(r => r.json());
+        document.getElementById('bot-logs').innerHTML = logs.map(l => `
+          <tr>
+            <td>${new Date(l.timestamp).toLocaleString('pt-BR')}</td>
+            <td>${l.tipo}</td>
+            <td>${l.telefone}</td>
+            <td>${l.acao}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="4">Nenhuma atividade</td></tr>';
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadClientes() {
+      const q = document.getElementById('filter-cliente').value;
+      const url = q ? `/api/clientes?q=${encodeURIComponent(q)}` : '/api/clientes';
+      const clientes = await fetch(url).then(r => r.json());
+      
+      const statusClass = { 'novo': 'primary', 'contatado': 'info', 'interessado': 'warning', 'inativo': 'secondary' };
+      document.getElementById('clientes-table').innerHTML = clientes.map(c => `
+        <tr>
+          <td><strong>${c.nome || '-'}</strong></td>
+          <td>${c.telefone || '-'}</td>
+          <td>${c.email || '-'}</td>
+          <td>${c.veiculo_interesse || '-'}</td>
+          <td><span class="badge bg-${statusClass[c.status]}">${c.status}</span></td>
+          <td>${c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '-'}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" onclick="editCliente(${c.id})">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="7">Nenhum cliente</td></tr>';
+    }
+
+    function openClienteModal() {
+      document.getElementById('cliente-form').reset();
+      document.getElementById('clienteModalTitle').textContent = 'Novo Cliente';
+      clienteModal.show();
+    }
+
+    async function editCliente(id) {
+      try {
+        const response = await fetch(`/api/clientes/${id}`);
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || 'Erro ao buscar');
+        }
+        const c = await response.json();
+        const form = document.getElementById('cliente-form');
+        form.id.value = c.id;
+        form.nome.value = c.nome || '';
+        form.telefone.value = c.telefone || '';
+        form.email.value = c.email || '';
+        form.veiculo_interesse.value = c.veiculo_interesse || '';
+        form.status.value = c.status || 'novo';
+        form.observacoes.value = c.observacoes || '';
+        document.getElementById('clienteModalTitle').textContent = 'Editar Cliente';
+        clienteModal.show();
+      } catch (error) {
+        console.error('Erro ao editar cliente:', error);
+        alert('Erro ao carregar cliente: ' + error.message);
+      }
+    }
+
+    async function saveCliente() {
+      const form = document.getElementById('cliente-form');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      const id = data.id;
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `/api/clientes/${id}` : '/api/clientes';
+      
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      clienteModal.hide();
+      loadClientes();
+    }
+
+    async function enviarNotificacoes() {
+      const btn = document.getElementById('btn-enviar-notificacoes');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
+      
+      try {
+        const response = await fetch(`/api/veiculos/${veiculoIdParaNotificar}/notificar-interessados`, {
+          method: 'POST'
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+          alert(`Notificações enviadas para ${result.quantos} cliente(s)!`);
+          notificarModal.hide();
+        }
+      } catch (e) {
+        alert('Erro ao enviar notificações');
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-send"></i> Enviar para Todos';
+    }
+
+    let conversaSelecionada = null;
+    let telefoneConversaAtual = null;
+
+    async function loadConversas() {
+      let conversas = await fetch('/api/conversas').then(r => r.json());
+      
+      const busca = document.getElementById('busca-conversa')?.value?.toLowerCase() || '';
+      const filtroStatus = document.getElementById('filtro-status-conversa')?.value || '';
+      const usuarioLogado = document.getElementById('usuario-logado')?.value || 'Sérgio';
+      const isAdmin = usuarioLogado === 'Sérgio';
+      
+      if (busca) {
+        conversas = conversas.filter(c => 
+          (c.nome || '').toLowerCase().includes(busa) || 
+          c.telefone.includes(busca)
+        );
+      }
+      
+      if (filtroStatus) {
+        conversas = conversas.filter(c => c.status === filtroStatus);
+      }
+      
+      const abertas = conversas.filter(c => c.status === 'aberta').length;
+      const badge = document.getElementById('conversas-badge');
+      const contador = document.getElementById('contador-conversas');
+      
+      if (badge) {
+        badge.textContent = abertas;
+        badge.style.display = abertas > 0 ? 'inline' : 'none';
+      }
+      if (contador) {
+        contador.textContent = abertas;
+      }
+      
+      const statusBadge = {
+        'aberta': 'warning',
+        'atendida': 'success'
+      };
+      
+      document.getElementById('conversas-list').innerHTML = conversas.map(c => {
+        const podeAtender = c.status === 'aberta' && (isAdmin || !c.vendedor_atendente);
+        return `
+        <a href="#" class="list-group-item list-group-item-action ${c.status === 'aberta' ? 'border-start border-warning border-3' : ''}" onclick="abrirConversa(${c.id}, '${c.nome || c.telefone}', event)">
+          <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">${c.nome || c.telefone}</h6>
+            <small>${c.updated_at ? new Date(c.updated_at).toLocaleTimeString('pt-BR') : ''}</small>
+          </div>
+          <p class="mb-1 text-muted small">${c.ultima_mensagem || 'Sem mensagens'}</p>
+          <small>
+            <span class="badge bg-${statusBadge[c.status]}">${c.status}</span>
+            ${c.vendedor_atendente ? ' - ' + c.vendedor_atendente : ''}
+            ${podeAtender ? '<span class="badge bg-danger ms-1">⚠️ Novo</span>' : ''}
+          </small>
+        </a>
+      `}).join('') || '<div class="p-3 text-muted">Nenhuma conversa</div>';
+    }
+
+    async function abrirConversa(id, nome, event) {
+      if (event) event.preventDefault();
+      
+      const conversas = await fetch('/api/conversas').then(r => r.json());
+      const conversa = conversas.find(c => c.id === id);
+      telefoneConversaAtual = conversa?.telefone;
+      
+      conversaSelecionada = id;
+      document.getElementById('chat-area').style.display = 'block';
+      document.getElementById('chat-vazio').style.display = 'none';
+      document.getElementById('chat-nome').textContent = nome;
+      
+      const usuarioLogado = document.getElementById('usuario-logado').value;
+      const btnAtender = document.getElementById('btn-atender');
+      
+      if (conversa.status === 'atendida' && conversa.vendedor_atendente !== usuarioLogado && usuarioLogado !== 'Sérgio') {
+        btnAtender.style.display = 'none';
+      } else if (conversa.status === 'aberta') {
+        btnAtender.style.display = 'inline-block';
+        btnAtender.textContent = 'Atender';
+      } else {
+        btnAtender.style.display = 'none';
+      }
+      
+      const mensagens = await fetch(`/api/conversas/${id}`).then(r => r.json());
+      
+      document.getElementById('chat-mensagens').innerHTML = mensagens.map(m => `
+        <div class="mb-2 ${m.tipo === 'recebida' ? 'text-start' : 'text-end'}">
+          <span class="badge ${m.tipo === 'recebida' ? 'bg-secondary' : 'bg-success'}">
+            ${m.tipo === 'recebida' ? (m.nome || m.telefone) : 'Você'}
+          </span>
+          <div class="${m.tipo === 'recebida' ? 'bg-light d-inline-block' : 'bg-success text-white d-inline-block'} p-2 rounded" style="max-width: 70%;">
+            ${m.mensagem}
+          </div>
+          <br><small class="text-muted">${new Date(m.timestamp).toLocaleString('pt-BR')}</small>
+        </div>
+      `).join('');
+      
+      document.getElementById('chat-mensagens').scrollTop = document.getElementById('chat-mensagens').scrollHeight;
+    }
+
+    async function atenderConversa() {
+      if (!conversaSelecionada) return;
+      
+      const usuarioLogado = document.getElementById('usuario-logado').value;
+      
+      await fetch(`/api/conversas/${conversaSelecionada}/atender`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vendedor: usuarioLogado })
+      });
+      
+      loadConversas();
+      alert('Conversa atribuída a ' + usuarioLogado);
+    }
+
+    async function verHistoricoCliente() {
+      if (!telefoneConversaAtual) return;
+      
+      const conversas = await fetch('/api/conversas').then(r => r.json());
+      const historico = conversas.filter(c => c.telefone === telefoneConversaAtual);
+      
+      if (historico.length === 0) {
+        alert('Não há histórico anterior para este cliente');
+        return;
+      }
+      
+      let msg = '📋 Histórico deste cliente:\n\n';
+      historico.forEach((c, i) => {
+        msg += `${i + 1}. ${c.status.toUpperCase()} - ${c.ultima_mensagem || 'Sem mensagem'}\n`;
+        msg += `   Atendente: ${c.vendedor_atendente || 'Nenhum'}\n`;
+        msg += `   Data: ${new Date(c.updated_at).toLocaleString('pt-BR')}\n\n`;
+      });
+      
+      alert(msg);
+    }
+
+    async function enviarMensagem() {
+      if (!conversaSelecionada) return;
+      
+      const input = document.getElementById('mensagem-input');
+      const mensagem = input.value.trim();
+      if (!mensagem) return;
+      
+      const conversa = await fetch('/api/conversas').then(r => r.json()).then(c => c.find(x => x.id === conversaSelecionada));
+      
+      await fetch(`/api/conversas/${conversaSelecionada}/mensagens`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ telefone: conversa.telefone, mensagem })
+      });
+      
+      input.value = '';
+      abrirConversa(conversaSelecionada, conversa.nome || conversa.telefone);
+      loadConversas();
+    }
+
+    document.getElementById('mensagem-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') enviarMensagem();
+    });
+
+    async function abrirEdicaoCliente() {
+      if (!telefoneConversaAtual) return;
+      
+      try {
+        const response = await fetch(`/api/clientes/telefone/${telefoneConversaAtual.replace('@s.whatsapp.net', '')}`);
+        
+        if (response.ok) {
+          const c = await response.json();
+          
+          const form = document.getElementById('cliente-form');
+          form.id.value = c.id;
+          form.nome.value = c.nome || '';
+          form.telefone.value = c.telefone || '';
+          form.email.value = c.email || '';
+          form.veiculo_interesse.value = c.veiculo_interesse || '';
+          form.status.value = c.status || 'novo';
+          form.observacoes.value = c.observacoes || '';
+          
+          document.getElementById('clienteModalTitle').textContent = 'Editar Cliente';
+          clienteModal.show();
+        } else {
+          alert('Cliente não encontrado. Novo cliente será criado.');
+          
+          const form = document.getElementById('cliente-form');
+          form.reset();
+          form.id.value = '';
+          form.telefone.value = telefoneConversaAtual.replace('@s.whatsapp.net', '');
+          form.status.value = 'novo';
+          
+          document.getElementById('clienteModalTitle').textContent = 'Novo Cliente';
+          clienteModal.show();
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Erro ao carregar dados do cliente');
+      }
+    }
+
+    async function loadConfig() {
+      const config = await fetch('/api/config').then(r => r.json());
+      
+      document.getElementById('config-nome-loja').value = config?.nome_loja || '';
+      document.getElementById('config-telefone').value = config?.telefone_loja || '';
+      document.getElementById('config-mensagem').value = config?.mensagem_boas_vindas || '';
+      
+      document.getElementById('sidebar-nome-loja').textContent = config?.nome_loja || 'CarFlow';
+      
+      atualizarPreview();
+      await loadWhatsAppStatus();
+      
+      if (currentUser && currentUser.nivel === 'admin') {
+        document.getElementById('usuarios-section').style.display = 'block';
+        loadUsuarios();
+      } else {
+        document.getElementById('usuarios-section').style.display = 'none';
+      }
+    }
+    
+    async function loadWhatsAppStatus() {
+      try {
+        const conn = await fetch('/api/bot/connection').then(r => r.json());
+        const statusDiv = document.getElementById('whatsapp-status');
+        const qrContainer = document.getElementById('qrcode-container');
+        const imgQR = document.getElementById('qrcode-img');
+        const conectContainer = document.getElementById('conectado-container');
+        const btnDesconectar = document.getElementById('btn-desconectar');
+        const btnConectar = document.getElementById('btn-conectar');
+        
+        if (conn.connected) {
+          statusDiv.innerHTML = '<span class="badge bg-success">Conectado</span>';
+          qrContainer.style.display = 'none';
+          conectContainer.style.display = 'block';
+          btnDesconectar.style.display = 'inline-block';
+          btnConectar.style.display = 'none';
+        } else if (conn.qr) {
+          statusDiv.innerHTML = '<span class="badge bg-warning text-dark">Aguardando QR Code</span>';
+          imgQR.src = conn.qr;
+          qrContainer.style.display = 'block';
+          conectContainer.style.display = 'none';
+          btnDesconectar.style.display = 'none';
+          btnConectar.style.display = 'none';
+        } else {
+          statusDiv.innerHTML = '<span class="badge bg-danger">Desconectado</span>';
+          qrContainer.style.display = 'none';
+          conectContainer.style.display = 'none';
+          btnDesconectar.style.display = 'none';
+          btnConectar.style.display = 'inline-block';
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    
+    async function conectarBot() {
+      await fetch('/api/bot/reconnect', { method: 'POST' });
+      loadWhatsAppStatus();
+      setTimeout(loadWhatsAppStatus, 3000);
+    }
+    
+    async function desconectarBot() {
+      if (confirm('Tem certeza que deseja desconectar o WhatsApp? Será necessário escanear o QR Code novamente.')) {
+        await fetch('/api/bot/disconnect', { method: 'POST' });
+        location.reload();
+      }
+    }
+    
+    async function enviarBroadcast() {
+      const mensagem = document.getElementById('broadcast-mensagem').value.trim();
+      const filtro = document.getElementById('broadcast-filtro').value;
+      const resultDiv = document.getElementById('broadcast-result');
+      const btn = document.getElementById('btn-broadcast');
+      
+      if (!mensagem) {
+        alert('Digite uma mensagem!');
+        return;
+      }
+      
+      if (!confirm(`Enviar mensagem para todos os clientes (${filtro})?`)) {
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
+      
+      try {
+        const res = await fetch('/api/bot/broadcast', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mensagem, filtro })
+        });
+        
+        const data = await res.json();
+        resultDiv.innerHTML = `<div class="alert alert-success">
+          <i class="bi bi-check-circle"></i> Enviado para ${data.enviados} clientes.
+          ${data.erros > 0 ? `<br>Erros: ${data.erros}` : ''}
+        </div>`;
+      } catch (e) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">Erro: ${e.message}</div>`;
+      }
+      
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-send"></i> Enviar para Todos';
+    }
+    
+    async function loadUsuarios() {
+      const usuarios = await fetch('/api/usuarios').then(r => r.json());
+      document.getElementById('usuarios-table').querySelector('tbody').innerHTML = usuarios.map(u => `
+        <tr>
+          <td>${u.nome}</td>
+          <td>${u.email}</td>
+          <td><span class="badge bg-${u.nivel === 'admin' ? 'warning' : 'primary'}">${u.nivel}</span></td>
+          <td><span class="badge bg-${u.ativo ? 'success' : 'secondary'}">${u.ativo ? 'Ativo' : 'Inativo'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary" onclick="editUsuario(${u.id})">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="5">Nenhum usuário</td></tr>';
+    }
+    
+    function openUsuarioModal() {
+      document.getElementById('usuario-form').reset();
+      document.getElementById('usuario-id').value = '';
+      document.getElementById('usuarioModalTitle').textContent = 'Novo Usuário';
+      usuarioModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+      usuarioModal.show();
+    }
+    
+    async function editUsuario(id) {
+      const usuarios = await fetch('/api/usuarios').then(r => r.json());
+      const u = usuarios.find(x => x.id === id);
+      if (u) {
+        document.getElementById('usuario-id').value = u.id;
+        document.getElementById('usuario-nome').value = u.nome;
+        document.getElementById('usuario-email').value = u.email;
+        document.getElementById('usuario-senha').value = '';
+        document.getElementById('usuario-senha').required = false;
+        document.getElementById('usuario-nivel').value = u.nivel;
+        document.getElementById('usuarioModalTitle').textContent = 'Editar Usuário';
+        usuarioModal = new bootstrap.Modal(document.getElementById('usuarioModal'));
+        usuarioModal.show();
+      }
+    }
+    
+    async function salvarUsuario() {
+      const id = document.getElementById('usuario-id').value;
+      const data = {
+        nome: document.getElementById('usuario-nome').value,
+        email: document.getElementById('usuario-email').value,
+        nivel: document.getElementById('usuario-nivel').value
+      };
+      
+      const senha = document.getElementById('usuario-senha').value;
+      if (senha) data.senha = senha;
+      
+      if (id) {
+        await fetch(`/api/usuarios/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } else {
+        await fetch('/api/usuarios', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      }
+      
+      usuarioModal.hide();
+      loadUsuarios();
+    }
+
+    function atualizarPreview() {
+      const nomeLoja = document.getElementById('config-nome-loja').value || 'Revenda Auto';
+      document.getElementById('preview-texto').innerHTML = `🏠 *BEM-VINDO À ${nomeLoja.toUpperCase()}*
+
+1️⃣ - Ver veículos disponíveis
+2️⃣ - Buscar veículo específico
+3️⃣ - Falar com atendente
+
+Digite o número da opção.`;
+    }
+
+    document.getElementById('config-nome-loja').addEventListener('input', atualizarPreview);
+
+    async function salvarConfig() {
+      const data = {
+        nome_loja: document.getElementById('config-nome-loja').value,
+        telefone_loja: document.getElementById('config-telefone').value,
+        mensagem_boas_vindas: document.getElementById('config-mensagem').value,
+        groq_api_key: document.getElementById('config-groq-api-key').value
+      };
+
+      await fetch('/api/config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      alert('Configurações salvas! A mensagem do bot será atualizada automaticamente.');
+      loadDashboard();
+    }
+  </script>
+</body>
+</html>
