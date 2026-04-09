@@ -42,9 +42,9 @@ export class AgenteConsulta {
     return { marca, modelo, ano, raw: normalized };
   }
 
-  search(query) {
+  search(query, db) {
     const parsed = this.parseQuery(query);
-    const results = searchVehicles(parsed.raw);
+    const results = searchVehicles(db, parsed.raw);
     
     return {
       parsed,
@@ -53,8 +53,8 @@ export class AgenteConsulta {
     };
   }
 
-  getVehicleDetails(vehicleId) {
-    return getVehicleById(vehicleId);
+  getVehicleDetails(vehicleId, db) {
+    return getVehicleById(db, vehicleId);
   }
 
   formatVehicleMessage(vehicle) {

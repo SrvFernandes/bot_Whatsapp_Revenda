@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Master | Central SaaS</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #4d7cfe;
+            --secondary: #3248f2;
+            --bg: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --success: #4d7cfe;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(77, 124, 254, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(50, 72, 242, 0.05) 0px, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 1.25rem 1.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 0.4rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid transparent;
+        }
+
+        .badge-ativo { 
+            background: rgba(77, 124, 254, 0.1); 
+            color: var(--primary); 
+            border-color: rgba(77, 124, 254, 0.2);
+        }
+        .badge-expirado { 
+            background: rgba(245, 158, 11, 0.1); 
+            color: var(--warning); 
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+        .badge-bloqueado { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: var(--danger); 
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: #000;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(77, 124, 254, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline:hover { 
+            background: var(--primary); 
+            color: #000; 
+        }
+
+        .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+
+        .price-tag {
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .actions { display: flex; gap: 0.5rem; }
+
+        .loading {
+            padding: 4rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .price-tag {
+            font-weight: 600;
+            color: #34d399;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            th:nth-child(4), td:nth-child(4) { display: none; }
+        }
+
+        /* Modal do Simulador */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-container {
+            width: 90%;
+            max-width: 500px;
+            background: var(--bg);
+            border-radius: 1.5rem;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-header-sim {
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .close-modal:hover { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i data-lucide="shield-check"></i> Admin Master SaaS</h1>
+            <button class="btn btn-outline" onclick="loadData()"><i data-lucide="refresh-cw"></i> Atualizar</button>
+        </header>
+
+        <div class="stats-grid" id="stats-container">
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="store"></i> Total de Lojas</div>
+                <div class="stat-value" id="stat-total">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="check-circle-2"></i> Ativas</div>
+                <div class="stat-value" id="stat-ativas" style="color: var(--success)">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="alert-triangle"></i> Expiradas / Pendentes</div>
+                <div class="stat-value" id="stat-expiradas" style="color: var(--warning)">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label"><i data-lucide="dollar-sign"></i> Faturamento Mensal</div>
+                <div class="stat-value" id="stat-faturamento">-</div>
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="card-header">
+                <h2>Gerenciamento de Revendas</h2>
+            </div>
+            <div id="table-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loja / Cliente</th>
+                            <th>Status</th>
+                            <th>Expiração</th>
+                            <th>Indicações</th>
+                            <th>Mensalidade</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="revendas-list">
+                        <!-- Loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Simulador -->
+    <div class="modal-overlay" id="sim-modal">
+        <div class="modal-container">
+            <div class="modal-header-sim">
+                <span id="sim-title" style="font-weight: 600; font-size: 0.9rem">Testando Loja: ...</span>
+                <div class="close-modal" onclick="closeSimulator()">
+                    <i data-lucide="x-circle"></i>
+                </div>
+            </div>
+            <iframe id="sim-iframe" src="" style="width: 100%; height: 600px; border: none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                // Carregar Stats
+                const statsRes = await fetch('/api/admin/dashboard');
+                const stats = await statsRes.json();
+                
+                document.getElementById('stat-total').innerText = stats.total || 0;
+                document.getElementById('stat-ativas').innerText = stats.ativas || 0;
+                document.getElementById('stat-expiradas').innerText = (stats.expiradas || 0) + (stats.bloqueadas || 0);
+                document.getElementById('stat-faturamento').innerText = `R$ ${(stats.faturamento || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+                // Carregar Revendas
+                const revendasRes = await fetch('/api/admin/revendas');
+                const revendas = await revendasRes.json();
+                
+                const list = document.getElementById('revendas-list');
+                list.innerHTML = revendas.map(r => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600">${r.nome}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted)">/${r.slug}</div>
+                        </td>
+                        <td><span class="badge badge-${r.status}">${r.status}</span></td>
+                        <td>${new Date(r.data_expiracao).toLocaleDateString('pt-BR')}</td>
+                        <td>
+                            <span style="display: flex; align-items: center; gap: 0.25rem">
+                                <i data-lucide="users" style="width: 14px"></i> ${r.indicações_ativas || 0}
+                            </span>
+                        </td>
+                        <td class="price-tag">R$ ${r.valor_mensalidade.toFixed(2).replace('.', ',')}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn btn-sm btn-outline" onclick="performAction(${r.id}, 'extend')" title="Renovar +30 dias">
+                                    <i data-lucide="calendar-plus" style="width: 16px"></i>
+                                </button>
+                                ${r.status !== 'bloqueado' ? `
+                                    <button class="btn btn-sm" style="background: var(--danger)" onclick="performAction(${r.id}, 'toggle-status', 'bloqueado')" title="Bloquear">
+                                        <i data-lucide="lock" style="width: 16px"></i>
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-sm" style="background: var(--success)" onclick="performAction(${r.id}, 'toggle-status', 'ativo')" title="Desbloquear">
+                                        <i data-lucide="unlock" style="width: 16px"></i>
+                                    </button>
+                                `}
+                                <a href="/${r.slug}" target="_blank" class="btn btn-sm btn-outline" title="Ver Loja">
+                                    <i data-lucide="external-link" style="width: 16px"></i>
+                                </a>
+                                <button class="btn btn-sm btn-outline" onclick="openSimulator('${r.slug}', '${r.nome}')" title="Testar IA do Robô" style="border-color: #c9a227; color: #c9a227">
+                                    <i data-lucide="bot" style="width: 16px"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        async function performAction(id, action, value = null) {
+            const confirmMsg = action === 'extend' ? 'Confirmar renovação de +30 dias?' : `Confirmar alteração de status para ${value}?`;
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                const res = await fetch(`/api/admin/revendas/${id}/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action, value })
+                });
+                
+                const result = await res.json();
+                if (result.success) {
+                    alert(result.message);
+                    loadData();
+                } else {
+                    alert('Erro: ' + result.error);
+                }
+            } catch (error) {
+                alert('Erro na requisição');
+            }
+        }
+
+        function openSimulator(slug, nome) {
+            document.getElementById('sim-title').innerText = `🤖 Testando IA: ${nome}`;
+            document.getElementById('sim-iframe').src = `/simulador.html?slug=${slug}`;
+            document.getElementById('sim-modal').style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function closeSimulator() {
+            document.getElementById('sim-modal').style.display = 'none';
+            document.getElementById('sim-iframe').src = '';
+        }
+
+        // Init
+        loadData();
+        lucide.createIcons();
+    </script>
+</body>
+</html>

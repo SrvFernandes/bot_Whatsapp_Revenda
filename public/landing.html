@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarFlow | O Robô de Vendas para sua Revenda</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4d7cfe;
+      --secondary: #3248f2;
+      --dark-bg: #0a0a0c;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Animações */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-up { animation: fadeInUp 0.8s ease forwards; }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(10, 10, 12, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.5rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 1.8rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Hero Section */
+    .pricing-card.popular {
+      border-color: var(--primary);
+      background: radial-gradient(circle at top right, rgba(77, 124, 254, 0.1), transparent);
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    .hero-section {
+      padding: 160px 0 100px;
+      background: radial-gradient(circle at top right, rgba(77, 124, 254, 0.15), transparent),
+                  radial-gradient(circle at bottom left, rgba(50, 72, 242, 0.1), transparent);
+    }
+
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+    }
+
+    .btn-premium {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: #000;
+      font-weight: 600;
+      padding: 12px 30px;
+      border-radius: 12px;
+      border: none;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-premium:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(77, 124, 254, 0.3);
+      color: #000;
+      filter: brightness(1.1);
+    }
+
+    .btn-outline-premium {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 12px 30px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-premium:hover {
+      background: var(--primary);
+      color: #000;
+    }
+
+    /* Features */
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 24px;
+      height: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Pricing Section */
+    .pricing-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      border: 1px solid var(--primary);
+      padding: 3rem;
+      border-radius: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: 'MAIS POPULAR';
+      position: absolute;
+      top: 20px;
+      right: -30px;
+      background: var(--primary);
+      color: #000;
+      padding: 5px 40px;
+      transform: rotate(45deg);
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .price-value {
+      font-size: 4rem;
+      font-weight: 800;
+      margin: 1rem 0;
+    }
+
+    .price-currency { font-size: 1.5rem; vertical-align: super; margin-right: 5px; }
+    .price-period { font-size: 1.2rem; color: rgba(255, 255, 255, 0.5); }
+
+    /* Modal */
+    .modal-content {
+      background: #111;
+      border: 1px solid var(--glass-border);
+      color: #fff;
+    }
+
+    .modal-header { border-bottom: 1px solid var(--glass-border); }
+    .modal-footer { border-top: 1px solid var(--glass-border); }
+    .form-control {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+    }
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: none;
+    }
+
+    footer {
+      padding: 50px 0;
+      border-top: 1px solid var(--glass-border);
+      margin-top: 100px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">CARFLOW</a>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-premium" data-bs-toggle="modal" data-bs-target="#loginModal">
+          <i class="bi bi-person"></i> ACESSAR PAINEL
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container text-center text-lg-start">
+      <div class="row align-items-center">
+        <div class="col-lg-7 animate-up">
+          <h1 class="hero-title">Acelere suas vendas no <span style="color: var(--primary);">WhatsApp</span></h1>
+          <p class="hero-subtitle">
+            O primeiro sistema SaaS especializado em revendas de veículos que automatiza todo o seu processo comercial, desde o estoque até o fechamento com o cliente.
+          </p>
+          <div class="d-flex flex-column flex-sm-row gap-3">
+            <a href="#planos" class="btn btn-premium btn-lg">Assinar Agora</a>
+            <a href="https://wa.me/550000000000" target="_blank" class="btn btn-outline-premium btn-lg">Falar com Consultor</a>
+          </div>
+        </div>
+        <div class="col-lg-5 mt-5 mt-lg-0 text-center animate-up" style="animation-delay: 0.2s;">
+          <img src="/Logo.png" alt="CarFlow App" class="img-fluid" style="max-height: 400px; filter: drop-shadow(0 0 50px rgba(0, 242, 255, 0.3));">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-5" id="funcionalidades">
+    <div class="container">
+      <div class="text-center mb-5 animate-up">
+        <h2 class="display-4 fw-bold">Por que o CarFlow?</h2>
+        <p class="text-muted">Potencialize sua revenda com tecnologia de ponta.</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4 animate-up" style="animation-delay: 0.1s;">
+          <div class="feature-card">
+            <i class="bi bi-megaphone-fill feature-icon"></i>
+            <h3>Transmissão em Massa</h3>
+            <p class="text-muted">Envie novidades e promoções para toda a sua base de clientes com um clique, de forma segura e automatizada.</p>
+          </div>
+        </div>
+        <div class="col-md-4 animate-up" style="animation-delay: 0.2s;">
+          <div class="feature-card">
+            <i class="bi bi-robot feature-icon"></i>
+            <h3>Atendimento 24h</h3>
+            <p class="text-muted">Seu robô não dorme. Ele responde dúvidas sobre estoque, envia fotos e captura leads mesmo de madrugada.</p>
+          </div>
+        </div>
+        <div class="col-md-4 animate-up" style="animation-delay: 0.3s;">
+          <div class="feature-card">
+            <i class="bi bi-speedometer2 feature-icon"></i>
+            <h3>Gestão de Estoque</h3>
+            <p class="text-muted">Painel administrativo completo para gerenciar seus veículos, fotos e status das negociações em tempo real.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="py-5" id="planos">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-xl-5 animate-up">
+          <div class="pricing-card">
+            <h3 class="mb-4">Plano Revenda Pro</h3>
+            <p class="text-muted">Tudo o que você precisa para dominar o mercado local.</p>
+            <div class="price-value">
+              <span class="price-currency">R$</span>249<span class="price-period">,00/mês</span>
+            </div>
+            <ul class="list-unstyled mb-5 text-start">
+              <li><i class="bi bi-check-circle-fill text-primary me-2"></i> WhatsApp Bot Completo</li>
+              <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Broadcast Ilimitado</li>
+              <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Painel Administrativo Exclusivo</li>
+              <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Suporte Prioritário</li>
+              <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Multitenant (Sua loja isolada)</li>
+            </ul>
+            <button class="btn btn-premium w-100 btn-lg">Começar Agora</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center">
+    <div class="container">
+      <p>&copy; 2026 CarFlow SaaS. Todos os direitos reservados.</p>
+      <div class="d-flex justify-content-center gap-3 mt-3">
+        <a href="#" class="text-muted text-decoration-none">Termos de Uso</a>
+        <a href="#" class="text-muted text-decoration-none">Privacidade</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Login -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Acesse sua Loja</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="text-muted small mb-4">Digite o nome identificador (slug) da sua loja para entrar no painel.</p>
+          <div class="mb-3">
+            <label class="form-label">Identificador da Loja</label>
+            <input type="text" class="form-control form-control-lg" id="slugInput" placeholder="ex: caio-veiculos" autofocus>
+          </div>
+          <button class="btn btn-premium w-100 btn-lg" onclick="redirectLoja()">ENTRAR NO PAINEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function redirectLoja() {
+      const slug = document.getElementById('slugInput').value.trim();
+      if (slug) {
+        window.location.href = '/' + slug;
+      } else {
+        alert('Por favor, digite o identificador da sua loja.');
+      }
+    }
+
+    // Enter no input do modal
+    document.getElementById('slugInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') redirectLoja();
+    });
+  </script>
+</body>
+</html>

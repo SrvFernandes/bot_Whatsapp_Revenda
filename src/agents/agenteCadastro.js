@@ -9,7 +9,7 @@ export class AgenteCadastro {
     this.pendingRegistrations.set(userId, { step: 'marca', data: {} });
   }
 
-  processInput(userId, input) {
+  processInput(userId, input, db, dbPath) {
     const session = this.pendingRegistrations.get(userId);
     if (!session) return null;
 
@@ -78,7 +78,7 @@ Digite "sim" para confirmar ou "não" para cancelar.`
 
       case 'confirmar':
         if (input.toLowerCase() === 'sim') {
-          const vehicle = addVehicle(session.data);
+          const vehicle = addVehicle(db, dbPath, { ...session.data, status: 'pendente' });
           this.pendingRegistrations.delete(userId);
           return {
             status: 'success',
@@ -101,7 +101,7 @@ Digite "sim" para confirmar ou "não" para cancelar.`
 }
 
 export class AgenteVenda {
-  updateStatus(vehicleId, newStatus) {
-    return updateStatus(vehicleId, newStatus);
+  updateStatus(vehicleId, newStatus, db, dbPath) {
+    return updateStatus(db, dbPath, vehicleId, newStatus);
   }
 }

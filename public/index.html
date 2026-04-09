@@ -120,6 +120,7 @@
     }
     .status-disponivel { background: #d4edda; color: #155724; }
     .status-vendido { background: #f8d7da; color: #721c24; }
+    .status-pendente { background: #fff3cd; color: #856404; }
     .page-title {
       font-family: 'Playfair Display', serif;
       color: var(--text-dark);
@@ -218,7 +219,9 @@
   <!-- Login Overlay -->
   <div class="login-overlay" id="loginOverlay">
     <div class="login-card">
-      <div class="login-logo" id="loginLogo">CarFlow</div>
+      <div class="login-logo" id="loginLogo">
+        <img src="logo.png" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+      </div>
       <p class="text-muted mb-4">Gestão Premium</p>
       <form id="loginForm">
         <div class="mb-3">
@@ -328,6 +331,7 @@
               <option value="">Todos</option>
               <option value="disponivel">Disponível</option>
               <option value="vendido">Vendido</option>
+              <option value="pendente">Aguardando Aprovação</option>
             </select>
           </div>
           <div class="col-md-2">
@@ -457,6 +461,11 @@
             <i class="bi bi-activity"></i> Logs
           </button>
         </li>
+        <li class="nav-item">
+          <button class="nav-link" id="conexao-tab" data-bs-toggle="tab" data-bs-target="#conexao-content" type="button">
+            <i class="bi bi-broadcast"></i> Conexão & Broadcast
+          </button>
+        </li>
       </ul>
       
       <div class="tab-content" id="mensagensTabContent">
@@ -570,6 +579,58 @@
             </div>
           </div>
         </div>
+        
+        <!-- Aba Conexão & Broadcast -->
+        <div class="tab-pane fade" id="conexao-content">
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <div class="card p-4">
+                <h5 class="mb-4">Conexão WhatsApp</h5>
+                <div class="text-center">
+                  <div id="whatsapp-status" class="mb-3">
+                    <span class="badge bg-secondary">Desconectado</span>
+                  </div>
+                  <div id="qrcode-container" class="mb-3" style="display: none;">
+                    <p class="text-muted small">Escaneie o QR Code com seu WhatsApp</p>
+                    <img id="qrcode-img" style="max-width: 200px; border: 1px solid #ddd; border-radius: 8px;">
+                  </div>
+                  <div id="conectado-container" class="mb-3" style="display: none;">
+                    <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                    <p class="text-success mt-2">WhatsApp Conectado!</p>
+                  </div>
+                  <button class="btn btn-outline-danger btn-sm" id="btn-desconectar" onclick="desconectarBot()" style="display: none;">
+                    <i class="bi bi-x-circle"></i> Desconectar
+                  </button>
+                  <button class="btn btn-premium btn-sm" id="btn-conectar" onclick="conectarBot()" style="display: none;">
+                    <i class="bi bi-plug"></i> Conectar WhatsApp
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card p-4">
+                <h5 class="mb-4">📢 Broadcast WhatsApp</h5>
+                <p class="text-muted small">Enviar mensagem para todos os clientes cadastrados</p>
+                <div class="mb-3">
+                  <textarea class="form-control" id="broadcast-mensagem" rows="4" placeholder="Digite sua mensagem..."></textarea>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Filtrar por status:</label>
+                  <select class="form-select" id="broadcast-filtro">
+                    <option value="todos">Todos os clientes</option>
+                    <option value="interessado">Apenas interessados</option>
+                    <option value="novo">Apenas novos</option>
+                    <option value="contatado">Apenas contatados</option>
+                  </select>
+                </div>
+                <button class="btn btn-premium" onclick="enviarBroadcast()" id="btn-broadcast">
+                  <i class="bi bi-send"></i> Enviar para Todos
+                </button>
+                <div id="broadcast-result" class="mt-3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -650,54 +711,7 @@
           </div>
         </div>
       </div>
-      <div class="row mt-4">
-        <div class="col-md-6">
-          <div class="card p-4">
-            <h5 class="mb-4">Conexão WhatsApp</h5>
-            <div class="text-center">
-              <div id="whatsapp-status" class="mb-3">
-                <span class="badge bg-secondary">Desconectado</span>
-              </div>
-              <div id="qrcode-container" class="mb-3" style="display: none;">
-                <p class="text-muted small">Escaneie o QR Code com seu WhatsApp</p>
-                <img id="qrcode-img" style="max-width: 200px; border: 1px solid #ddd; border-radius: 8px;">
-              </div>
-                <div id="conectado-container" class="mb-3" style="display: none;">
-                <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
-                <p class="text-success mt-2">WhatsApp Conectado!</p>
-              </div>
-              <button class="btn btn-outline-danger btn-sm" id="btn-desconectar" onclick="desconectarBot()" style="display: none;">
-                <i class="bi bi-x-circle"></i> Desconectar
-              </button>
-              <button class="btn btn-premium btn-sm" id="btn-conectar" onclick="conectarBot()" style="display: none;">
-                <i class="bi bi-plug"></i> Conectar WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card p-4">
-            <h5 class="mb-4">📢 Broadcast WhatsApp</h5>
-            <p class="text-muted small">Enviar mensagem para todos os clientes cadastrados</p>
-            <div class="mb-3">
-              <textarea class="form-control" id="broadcast-mensagem" rows="4" placeholder="Digite sua mensagem..."></textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Filtrar por status:</label>
-              <select class="form-select" id="broadcast-filtro">
-                <option value="todos">Todos os clientes</option>
-                <option value="interessado">Apenas interessados</option>
-                <option value="novo">Apenas novos</option>
-                <option value="contatado">Apenas contatados</option>
-              </select>
-            </div>
-            <button class="btn btn-premium" onclick="enviarBroadcast()" id="btn-broadcast">
-              <i class="bi bi-send"></i> Enviar para Todos
-            </button>
-            <div id="broadcast-result" class="mt-3"></div>
-          </div>
-        </div>
-      </div>
+
       <div class="row mt-4" id="usuarios-section" style="display: none;">
         <div class="col-12">
           <div class="card p-4">
@@ -954,6 +968,22 @@
     let veiculoIdParaNotificar;
     let currentUser = null;
     
+    // Identificação do Tenant
+    const pathSegments = window.location.pathname.split('/').filter(s => s);
+    const tenantSlug = pathSegments[0] || 'default';
+    console.log('[CarFlow] Tenant detectado:', tenantSlug);
+    
+    // Helper para URLs de API
+    const api = (path) => {
+      const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+      if (cleanPath.startsWith('api/')) {
+        const parts = cleanPath.split('/');
+        // Se a estrutura for api/algo, transforma em api/slug/algo
+        return `/api/${tenantSlug}/${parts.slice(1).join('/')}`;
+      }
+      return `/api/${tenantSlug}/${cleanPath}`;
+    };
+    
     async function checkLogin() {
       const savedUser = localStorage.getItem('currentUser');
       if (savedUser) {
@@ -962,7 +992,7 @@
         updateUserUI();
       }
       
-      const config = await fetch('/api/config').then(r => r.json());
+      const config = await fetch(api('/config')).then(r => r.json());
       const nomeLoja = config?.nome_loja || 'CarFlow';
       document.getElementById('loginLogo').textContent = nomeLoja;
       document.getElementById('sidebar-nome-loja').textContent = nomeLoja;
@@ -982,7 +1012,7 @@
     }
     
     async function doLogin(email, senha) {
-      const res = await fetch('/api/usuarios/login', {
+      const res = await fetch(api('/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha })
@@ -1034,7 +1064,7 @@
         const formData = new FormData(e.target);
         
         try {
-          const response = await fetch('/api/veiculos', { method: 'POST', body: formData });
+          const response = await fetch(api('/veiculos'), { method: 'POST', body: formData });
           const result = await response.json();
           
           console.log('Veículo cadastrado:', result);
@@ -1088,15 +1118,26 @@
       if (page === 'dashboard') loadDashboard();
       if (page === 'veiculos') loadVehicles();
       if (page === 'historico') loadHistorico();
-      if (page === 'bot') { loadBotStats(); loadConversas(); }
+      if (page === 'bot') { 
+        loadBotStats(); 
+        loadConversas(); 
+        loadWhatsAppStatus();
+        
+        // Garantir que a primeira aba (Conversas) seja a ativa ao entrar
+        const firstTab = document.querySelector('#mensagensTab button[data-bs-target="#conversas-content"]');
+        if (firstTab && !firstTab.classList.contains('active')) {
+          const tab = new bootstrap.Tab(firstTab);
+          tab.show();
+        }
+      }
       if (page === 'clientes') loadClientes();
       if (page === 'config') loadConfig();
     }
 
     async function loadDashboard() {
-      const available = await fetch('/api/veiculos?status=disponivel').then(r => r.json());
-      const sold = await fetch('/api/veiculos?status=vendido').then(r => r.json());
-      const all = await fetch('/api/veiculos').then(r => r.json());
+      const available = await fetch(api('/veiculos?status=disponivel')).then(r => r.json());
+      const sold = await fetch(api('/veiculos?status=vendido')).then(r => r.json());
+      const all = await fetch(api('/veiculos')).then(r => r.json());
       
       document.getElementById('total-veiculos').textContent = all.length;
       document.getElementById('disponiveis').textContent = available.length;
@@ -1120,7 +1161,7 @@
     async function loadVehicles() {
       const busca = document.getElementById('filter-busca').value;
       const status = document.getElementById('filter-status').value;
-      let url = '/api/veiculos?';
+      let url = api('/veiculos?');
       if (busca) url += `q=${encodeURIComponent(busca)}&`;
       if (status) url += `status=${status}`;
       const vehicles = await fetch(url).then(r => r.json());
@@ -1131,19 +1172,27 @@
           <td>${v.ano}</td>
           <td>${(v.quilometragem || 0).toLocaleString('pt-BR')}</td>
           <td>R$ ${(v.preco || 0).toLocaleString('pt-BR')}</td>
-          <td><span class="status-badge status-${v.status}">${v.status}</span></td>
+          <td><span class="status-badge status-${v.status}">${v.status === 'pendente' ? 'Aguardando Aprovação' : v.status}</span></td>
           <td>
-            <button class="btn btn-sm btn-outline-primary" onclick="editVehicle(${v.id})"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-outline-${v.status === 'disponivel' ? 'success' : 'warning'}" onclick="toggleStatus(${v.id}, '${v.status === 'disponivel' ? 'vendido' : 'disponivel'}')">
-              <i class="bi bi-arrow-repeat"></i>
-            </button>
+            <div class="d-flex gap-1">
+              <button class="btn btn-sm btn-outline-primary" onclick="editVehicle(${v.id})" title="Editar"><i class="bi bi-pencil"></i></button>
+              ${v.status === 'pendente' ? `
+                <button class="btn btn-sm btn-success" onclick="toggleStatus(${v.id}, 'disponivel')" title="Aprovar e Publicar">
+                  <i class="bi bi-check-lg"></i> Aprovar
+                </button>
+              ` : `
+                <button class="btn btn-sm btn-outline-${v.status === 'disponivel' ? 'success' : 'warning'}" onclick="toggleStatus(${v.id}, '${v.status === 'disponivel' ? 'vendido' : 'disponivel'}')" title="${v.status === 'disponivel' ? 'Marcar como Vendido' : 'Reativar'}">
+                  <i class="bi bi-arrow-repeat"></i>
+                </button>
+              `}
+            </div>
           </td>
         </tr>
       `).join('') || '<tr><td colspan="6">Nenhum veículo</td></tr>';
     }
 
     async function loadHistorico() {
-      const vehicles = await fetch('/api/veiculos?status=vendido').then(r => r.json());
+      const vehicles = await fetch(api('/veiculos?status=vendido')).then(r => r.json());
       document.getElementById('historico-table').innerHTML = vehicles.map(v => `
         <tr>
           <td><strong>${v.marca} ${v.modelo}</strong></td>
@@ -1156,7 +1205,7 @@
     }
 
     async function loadMarcas() {
-      const marcas = await fetch('/api/marcas').then(r => r.json());
+      const marcas = await fetch(api('/marcas')).then(r => r.json());
       const select = document.getElementById('marca-select');
       select.innerHTML = '<option value="">Selecione...</option>' +
         marcas.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
@@ -1170,7 +1219,7 @@
         modeloSelect.disabled = true;
         return;
       }
-      const modelos = await fetch(`/api/marcas/${marca}/modelos`).then(r => r.json());
+      const modelos = await fetch(api(`/marcas/${marca}/modelos`)).then(r => r.json());
       modeloSelect.innerHTML = '<option value="">Selecione...</option>' + modelos.map(m => `<option value="${m}">${m}</option>`).join('');
       modeloSelect.disabled = false;
     }
@@ -1183,13 +1232,13 @@
         anoSelect.disabled = true;
         return;
       }
-      const anos = await fetch(`/api/modelos/${modelo}/anos`).then(r => r.json());
+      const anos = await fetch(api(`/modelos/${modelo}/anos`)).then(r => r.json());
       anoSelect.innerHTML = '<option value="">Selecione...</option>' + anos.map(a => `<option value="${a}">${a}</option>`).join('');
       anoSelect.disabled = false;
     }
 
     async function editVehicle(id) {
-      const v = await fetch(`/api/veiculos/${id}`).then(r => r.json());
+      const v = await fetch(api(`/veiculos/${id}`)).then(r => r.json());
       const form = document.getElementById('edit-form');
       form.id.value = v.id;
       form.marca.value = v.marca;
@@ -1205,14 +1254,14 @@
       const formData = new FormData(form);
       const id = formData.get('id');
       formData.delete('id');
-      await fetch(`/api/veiculos/${id}`, { method: 'PUT', body: formData });
+      await fetch(api(`/veiculos/${id}`), { method: 'PUT', body: formData });
       editModal.hide();
       loadDashboard();
       loadVehicles();
     }
 
     async function toggleStatus(id, newStatus) {
-      await fetch(`/api/veiculos/${id}/status`, {
+      await fetch(api(`/veiculos/${id}/status`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -1224,8 +1273,8 @@
 
     async function loadBotStats() {
       try {
-        const stats = await fetch('/api/bot/stats').then(r => r.json());
-        const conn = await fetch('/api/bot/connection').then(r => r.json());
+        const stats = await fetch(api('/bot/stats')).then(r => r.json());
+        const conn = await fetch(api('/bot/connection')).then(r => r.json());
         
         const today = stats.today || {};
         document.getElementById('bot-msgs-recebidas').textContent = today.mensagens_recebidas || 0;
@@ -1234,7 +1283,7 @@
         document.getElementById('bot-connection').textContent = conn.connected ? 'Conectado' : 'Desconectado';
         document.getElementById('bot-connection').className = conn.connected ? 'h2 text-success' : 'h2 text-danger';
 
-        const logs = await fetch('/api/bot/logs?limit=20').then(r => r.json());
+        const logs = await fetch(api('/bot/logs?limit=20')).then(r => r.json());
         document.getElementById('bot-logs').innerHTML = logs.map(l => `
           <tr>
             <td>${new Date(l.timestamp).toLocaleString('pt-BR')}</td>
@@ -1250,7 +1299,7 @@
 
     async function loadClientes() {
       const q = document.getElementById('filter-cliente').value;
-      const url = q ? `/api/clientes?q=${encodeURIComponent(q)}` : '/api/clientes';
+      const url = q ? api(`/clientes?q=${encodeURIComponent(q)}`) : api('/clientes');
       const clientes = await fetch(url).then(r => r.json());
       
       const statusClass = { 'novo': 'primary', 'contatado': 'info', 'interessado': 'warning', 'inativo': 'secondary' };
@@ -1279,7 +1328,7 @@
 
     async function editCliente(id) {
       try {
-        const response = await fetch(`/api/clientes/${id}`);
+        const response = await fetch(api(`/clientes/${id}`));
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.error || 'Erro ao buscar');
@@ -1307,7 +1356,7 @@
       const data = Object.fromEntries(formData);
       const id = data.id;
       const method = id ? 'PUT' : 'POST';
-      const url = id ? `/api/clientes/${id}` : '/api/clientes';
+      const url = id ? api(`/clientes/${id}`) : api('/clientes');
       
       await fetch(url, {
         method,
@@ -1325,7 +1374,7 @@
       btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
       
       try {
-        const response = await fetch(`/api/veiculos/${veiculoIdParaNotificar}/notificar-interessados`, {
+        const response = await fetch(api(`/veiculos/${veiculoIdParaNotificar}/notificar-interessados`), {
           method: 'POST'
         });
         const result = await response.json();
@@ -1346,7 +1395,7 @@
     let telefoneConversaAtual = null;
 
     async function loadConversas() {
-      let conversas = await fetch('/api/conversas').then(r => r.json());
+      let conversas = await fetch(api('/conversas')).then(r => r.json());
       
       const busca = document.getElementById('busca-conversa')?.value?.toLowerCase() || '';
       const filtroStatus = document.getElementById('filtro-status-conversa')?.value || '';
@@ -1355,7 +1404,7 @@
       
       if (busca) {
         conversas = conversas.filter(c => 
-          (c.nome || '').toLowerCase().includes(busa) || 
+          (c.nome || '').toLowerCase().includes(busca) || 
           c.telefone.includes(busca)
         );
       }
@@ -1402,7 +1451,7 @@
     async function abrirConversa(id, nome, event) {
       if (event) event.preventDefault();
       
-      const conversas = await fetch('/api/conversas').then(r => r.json());
+      const conversas = await fetch(api('/conversas')).then(r => r.json());
       const conversa = conversas.find(c => c.id === id);
       telefoneConversaAtual = conversa?.telefone;
       
@@ -1423,7 +1472,7 @@
         btnAtender.style.display = 'none';
       }
       
-      const mensagens = await fetch(`/api/conversas/${id}`).then(r => r.json());
+      const mensagens = await fetch(api(`/conversas/${id}`)).then(r => r.json());
       
       document.getElementById('chat-mensagens').innerHTML = mensagens.map(m => `
         <div class="mb-2 ${m.tipo === 'recebida' ? 'text-start' : 'text-end'}">
@@ -1445,7 +1494,7 @@
       
       const usuarioLogado = document.getElementById('usuario-logado').value;
       
-      await fetch(`/api/conversas/${conversaSelecionada}/atender`, {
+      await fetch(api(`/conversas/${conversaSelecionada}/atender`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ vendedor: usuarioLogado })
@@ -1458,7 +1507,7 @@
     async function verHistoricoCliente() {
       if (!telefoneConversaAtual) return;
       
-      const conversas = await fetch('/api/conversas').then(r => r.json());
+      const conversas = await fetch(api('/conversas')).then(r => r.json());
       const historico = conversas.filter(c => c.telefone === telefoneConversaAtual);
       
       if (historico.length === 0) {
@@ -1483,9 +1532,9 @@
       const mensagem = input.value.trim();
       if (!mensagem) return;
       
-      const conversa = await fetch('/api/conversas').then(r => r.json()).then(c => c.find(x => x.id === conversaSelecionada));
+      const conversa = await fetch(api('/conversas')).then(r => r.json()).then(c => c.find(x => x.id === conversaSelecionada));
       
-      await fetch(`/api/conversas/${conversaSelecionada}/mensagens`, {
+      await fetch(api(`/conversas/${conversaSelecionada}/mensagens`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ telefone: conversa.telefone, mensagem })
@@ -1504,7 +1553,7 @@
       if (!telefoneConversaAtual) return;
       
       try {
-        const response = await fetch(`/api/clientes/telefone/${telefoneConversaAtual.replace('@s.whatsapp.net', '')}`);
+        const response = await fetch(api(`/clientes/telefone/${telefoneConversaAtual.replace('@s.whatsapp.net', '')}`));
         
         if (response.ok) {
           const c = await response.json();
@@ -1539,7 +1588,7 @@
     }
 
     async function loadConfig() {
-      const config = await fetch('/api/config').then(r => r.json());
+      const config = await fetch(api('/config')).then(r => r.json());
       
       document.getElementById('config-nome-loja').value = config?.nome_loja || '';
       document.getElementById('config-telefone').value = config?.telefone_loja || '';
@@ -1560,7 +1609,9 @@
     
     async function loadWhatsAppStatus() {
       try {
-        const conn = await fetch('/api/bot/connection').then(r => r.json());
+        const response = await fetch(api('/bot/connection'));
+        const conn = await response.json();
+        
         const statusDiv = document.getElementById('whatsapp-status');
         const qrContainer = document.getElementById('qrcode-container');
         const imgQR = document.getElementById('qrcode-img');
@@ -1588,20 +1639,30 @@
           btnDesconectar.style.display = 'none';
           btnConectar.style.display = 'inline-block';
         }
+
+        // Auto-refresh se estiver na página do bot e não estiver conectado
+        const botPage = document.getElementById('bot-page');
+        if (botPage && botPage.style.display === 'block' && !conn.connected) {
+          setTimeout(loadWhatsAppStatus, 5000);
+        }
       } catch (e) {
-        console.error(e);
+        console.error('Erro ao carregar status do WhatsApp:', e);
+        // Tenta novamente em caso de erro se a página estiver aberta
+        if (document.getElementById('bot-page').style.display === 'block') {
+          setTimeout(loadWhatsAppStatus, 5000);
+        }
       }
     }
     
     async function conectarBot() {
-      await fetch('/api/bot/reconnect', { method: 'POST' });
+      await fetch(api('/bot/reconnect'), { method: 'POST' });
       loadWhatsAppStatus();
       setTimeout(loadWhatsAppStatus, 3000);
     }
     
     async function desconectarBot() {
       if (confirm('Tem certeza que deseja desconectar o WhatsApp? Será necessário escanear o QR Code novamente.')) {
-        await fetch('/api/bot/disconnect', { method: 'POST' });
+        await fetch(api('/bot/disconnect'), { method: 'POST' });
         location.reload();
       }
     }
@@ -1625,7 +1686,7 @@
       btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
       
       try {
-        const res = await fetch('/api/bot/broadcast', {
+        const res = await fetch(api('/bot/broadcast'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ mensagem, filtro })
@@ -1645,7 +1706,7 @@
     }
     
     async function loadUsuarios() {
-      const usuarios = await fetch('/api/usuarios').then(r => r.json());
+      const usuarios = await fetch(api('/usuarios')).then(r => r.json());
       document.getElementById('usuarios-table').querySelector('tbody').innerHTML = usuarios.map(u => `
         <tr>
           <td>${u.nome}</td>
@@ -1655,6 +1716,9 @@
           <td>
             <button class="btn btn-sm btn-outline-primary" onclick="editUsuario(${u.id})">
               <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="deleteUsuario(${u.id})">
+              <i class="bi bi-trash"></i>
             </button>
           </td>
         </tr>
@@ -1670,7 +1734,7 @@
     }
     
     async function editUsuario(id) {
-      const usuarios = await fetch('/api/usuarios').then(r => r.json());
+      const usuarios = await fetch(api('/usuarios')).then(r => r.json());
       const u = usuarios.find(x => x.id === id);
       if (u) {
         document.getElementById('usuario-id').value = u.id;
