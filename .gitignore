@@ -1,6 +1,6 @@
 node_modules/
 .env
-*.db
+# *.db (removido para subir bancos de teste conforme pedido)
 *.log
 .DS_Store
 dist/
